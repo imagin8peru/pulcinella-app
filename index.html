@@ -114,7 +114,7 @@
             color: var(--accent-red);
         }
 
-        /* --- ACORDEONES FLUIDOS --- */
+        /* --- ACORDEONES --- */
         .category-accordion {
             border-bottom: 1px solid var(--border-light);
         }
@@ -156,7 +156,7 @@
         .product-desc { font-size: 0.75rem; color: var(--text-muted); font-style: italic; line-height: 1.4; margin-bottom: 6px; }
         .product-price { font-size: 1rem; font-weight: 700; color: var(--accent-gold); }
 
-        /* --- NUEVA ESTRUCTURA VERTICAL TOTAL PARA OPCIONES DE TAMAÑO --- */
+        /* --- ESTRUCTURA VERTICAL OPTIMIZADA PARA PIZZAS --- */
         .pizza-size-vertical-container {
             display: flex;
             flex-direction: column;
@@ -189,7 +189,7 @@
             gap: 8px;
         }
 
-        /* --- COMPONENTES DE SELECCIÓN DE SALSAS/OPCIONES --- */
+        /* --- INTERFAZ DE SELECCIONES EN COMBOS/PASTAS --- */
         .salsas-dynamic-container {
             display: flex;
             flex-direction: column;
@@ -259,7 +259,7 @@
             justify-content: center;
         }
 
-        /* --- BOTÓN DE ESTADO PERSISTENTE --- */
+        /* --- BOTÓN DE AGREGADO PERSISTENTE --- */
         .btn-add-item {
             background-color: var(--accent-red);
             color: white;
@@ -319,7 +319,7 @@
         .payment-icon svg { width: 100%; height: 100%; }
         .payment-name { font-size: 0.85rem; font-weight: 700; }
 
-        /* --- RESUMEN DE COMPRA (NATIVO ABAJO, NO FLOTANTE) --- */
+        /* --- RESUMEN DE COMPRA --- */
         .cart-padding { padding: 15px; }
         .cart-empty { font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 10px 0; }
         .cart-item-row { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 10px 0; border-bottom: 1px dashed var(--border-light); }
@@ -336,7 +336,7 @@
         }
         .total-amount { font-size: 1.1rem; color: var(--accent-red); font-weight: 700; }
 
-        /* --- CONTENEDOR NATIVO DEL BOTÓN DE CIERRE --- */
+        /* --- CONTENEDOR ESTÁTICO DEL BOTÓN --- */
         .btn-bottom-static-container {
             margin-top: 15px;
             padding: 5px 0;
@@ -588,8 +588,6 @@
     let selectedPayment = "Yape";
     let productQuantities = {};
     let addedProductsRegistry = {};
-    
-    // Almacenamiento interno preciso de selecciones de pizza por cada combo
     let seleccionesCombosInternos = {};
 
     const PIZZAS_MAESTRAS = [
@@ -614,7 +612,6 @@
         document.getElementById(id).classList.toggle('active');
     }
 
-    // RENDER DE FILAS VERTICALES LIMPIAS SOLICITADAS
     function renderSeccionesCatalogo() {
         let boxPizzasUnificado = '', boxPastas = '', boxHorneados = '', boxBebidas = '';
 
@@ -642,7 +639,7 @@
                                     <button class="qty-btn" onclick="changePizzaQty('${p.id}', 'grande', 1)">+</button>
                                 </div>
                                 <div style="display: flex; gap: 8px; align-items: center;">
-                                    <button class="btn-trash-clear" onclick="removePizzaFromSizes('${p.id}', 'grande', '${p.name} Grande')">🗑️</button>
+                                    <button class="btn-trash-clear" onclick="removePizzaFromSizes('${p.id}', 'grande')">🗑️</button>
                                     <button class="btn-add-item" id="btn-${p.id}-grande" onclick="addPizzaToCart('${p.id}', '${p.name}', 'Grande', 27.00)">Agregar</button>
                                 </div>
                             </div>
@@ -660,7 +657,7 @@
                                     <button class="qty-btn" onclick="changePizzaQty('${p.id}', 'familiar', 1)">+</button>
                                 </div>
                                 <div style="display: flex; gap: 8px; align-items: center;">
-                                    <button class="btn-trash-clear" onclick="removePizzaFromSizes('${p.id}', 'familiar', '${p.name} Familiar')">🗑️</button>
+                                    <button class="btn-trash-clear" onclick="removePizzaFromSizes('${p.id}', 'familiar')">🗑️</button>
                                     <button class="btn-add-item" id="btn-${p.id}-familiar" onclick="addPizzaToCart('${p.id}', '${p.name}', 'Familiar', 37.00)">Agregar</button>
                                 </div>
                             </div>
@@ -670,7 +667,6 @@
             `;
         });
 
-        // Pastas
         let pastas = [
             { id: 'ravioles', name: 'Ravioles', desc: 'Acompañados de tu salsa favorita.', price: 25 },
             { id: 'fettuccine', name: 'Fettuccine', desc: 'Fideos artesanales con insumos premium.', price: 25 },
@@ -680,7 +676,6 @@
             boxPastas += crearEstructuraHTMLCard(pas.id, pas.name, pas.desc, pas.price, pas.id, 'pasta');
         });
 
-        // Horneados
         let horneados = [
             { id: 'pan-ajo', name: 'Pan al Ajo (7 unidades)', desc: 'Pan crocante con nuestra mantequilla de ajo especial.', price: 5 },
             { id: 'pan-ajo-especial', name: 'Pan al Ajo Especial', desc: 'Con mozarella fundida, tocino picado y parmiggiano.', price: 9 },
@@ -690,7 +685,6 @@
             boxHorneados += crearEstructuraHTMLCard(h.id, h.name, h.desc, h.price, h.id, 'simple');
         });
 
-        // Bebidas
         boxBebidas += crearEstructuraHTMLCard('pepsi-600ml', 'Pepsi 600ml', 'Helada y refrescante.', 6.00, 'pepsi-600ml', 'simple');
 
         document.getElementById('box-pizzas-unificado').innerHTML = boxPizzasUnificado;
@@ -726,7 +720,6 @@
         `;
     }
 
-    // CONTROL COHESIVO E INTERACTIVO DE LAS PIZZAS POR TAMAÑO
     function changePizzaQty(pizzaId, size, amount) {
         let key = `${pizzaId}-${size}`;
         if (!productQuantities[key]) productQuantities[key] = 1;
@@ -753,11 +746,10 @@
             name: `${pizzaName} ${size}`,
             price: price,
             qty: qty,
-            optionsText: 'Sabor Tradicional 🍕',
+            optionsText: '', 
             type: 'pizza'
         });
 
-        // Cambio de estado persistente e inmutable en el DOM
         const targetButton = document.getElementById(`btn-${pizzaId}-${size.toLowerCase()}`);
         if (targetButton) {
             targetButton.innerText = "Agregado ✔";
@@ -767,7 +759,7 @@
         renderCart();
     }
 
-    function removePizzaFromSizes(pizzaId, size, fullName) {
+    function removePizzaFromSizes(pizzaId, size) {
         let key = `${pizzaId}-${size}`;
         cart = cart.filter(item => item.productCardId !== key);
         
@@ -782,7 +774,6 @@
         renderCart();
     }
 
-    // CONTROL DE BLOQUEOS INTELIGENTES PARA COMBOS Y SELECCIÓN DE RADIO PARA PASTAS
     function generateDynamicBlocks(productId, currentQty, productName, type) {
         const container = document.getElementById(`salsas-container-${productId}`);
         if(!container) return; 
@@ -892,7 +883,7 @@
                 name: productName,
                 price: price,
                 qty: qty,
-                optionsText: 'Horneado al momento',
+                optionsText: '', 
                 type: type
             });
         } 
@@ -992,11 +983,14 @@
             let itemCost = item.price * item.qty;
             subtotal += itemCost;
 
+            // Renderizado condicional limpio: Solo si hay texto de opciones válidas (como en combos/pastas) se muestra el subtítulo
+            let detailsHTML = item.optionsText ? `<span class="cart-item-salsas">${item.optionsText}</span>` : '';
+
             container.innerHTML += `
                 <div class="cart-item-row">
                     <div>
                         <strong>${item.qty < 10 ? '0' + item.qty : item.qty} x ${item.name}</strong>
-                        <span class="cart-item-salsas">${item.optionsText}</span>
+                        ${detailsHTML}
                     </div>
                     <div style="display: flex; align-items: center; gap: 10px;">
                         S/ ${itemCost.toFixed(2)}
@@ -1017,14 +1011,11 @@
     }
 
     function removeItemFromSummary(index, productCardId) {
-        // Encontrar elemento a remover
-        let targetItem = cart[index];
         cart.splice(index, 1);
         renderCart();
 
         const cardStillActive = cart.some(item => item.productCardId === productCardId);
         if (!cardStillActive) {
-            // Manejar toggle inverso para tarjetas de Pizzas Unificadas
             if (productCardId.endsWith('-grande') || productCardId.endsWith('-familiar')) {
                 productQuantities[productCardId] = 1;
                 let baseId = productCardId.split('-')[0];
@@ -1094,7 +1085,6 @@
             return;
         }
 
-        // Validación matemática rigurosa de Combos
         for (let item of cart) {
             if (item.type === 'combo') {
                 let limitBase = OP_COMBOS[item.productCardId].baseLimit;
@@ -1103,7 +1093,7 @@
                 let elegidas = Object.values(comboState).reduce((a, b) => a + b, 0);
 
                 if (elegidas !== esperado) {
-                    alert(`Por favor, termina de elegir las pizzas para el ${item.name}. Has elegido ${elegidas} de las ${esperado} requeridas.`);
+                    alert("Por favor, termina de elegir las pizzas de tu combo.");
                     return;
                 }
             }
@@ -1135,7 +1125,9 @@
         let resumenProductos = "";
         Object.values(consolidatedObject).forEach(item => {
             resumenProductos += `* ${item.qty < 10 ? '0' + item.qty : item.qty} x ${item.name} (S/ ${(item.price * item.qty).toFixed(2)})\n`;
-            resumenProductos += `   └ _${item.optionsText}_\n`;
+            if (item.optionsText) {
+                resumenProductos += `   └ _${item.optionsText}_\n`;
+            }
         });
 
         let direccionCompleta = reference ? `${address} (${zoneText}) [Ref: ${reference}]` : `${address} (${zoneText})`;
