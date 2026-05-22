@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pizzería Pulcinella — Pedidos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-claro: #F4EFE6; /* Tono crema base */
+            --card-light: #ffffff;
+            --accent-red: #8B1E0F; /* Rojo artesanal Pulcinella */
+            --accent-gold: #B87A13;
+            --accent-green: #1E6B38;
+            --text-main: #2C2C2C;
+            --text-muted: #666666;
+            --border-light: #E6DCcc;
+            --radius: 12px;
+        }
+
+        * {
+            box-shadow: none;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-image: url('imagenes/pattern-pulcinella.jpg');
+            background-repeat: repeat;
+            background-size: 600px 600px;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            padding: 15px;
+            padding-bottom: 100px; 
+        }
+
+        /* --- CABECERA PREMIUM --- */
+        .app-header {
+            background-image: linear-gradient(to bottom, rgba(244,239,230,0.1), rgba(244,239,230,0.95)), 
+                              url('imagenes/hero.jpg');
+            background-size: cover;
+            background-position: center center;
+            height: 150px;
+            border-radius: var(--radius);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-light);
+        }
+
+        .restaurant-name { 
+            font-size: 1.8rem; 
+            font-weight: 700; 
+            color: var(--accent-red);
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            text-shadow: 0 1px 4px rgba(255,255,255,0.8); 
+        }
+
+        .badge-status {
+            background-color: rgba(30, 107, 56, 0.1);
+            color: var(--accent-green);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-top: 6px;
+            border: 1px solid rgba(30, 107, 56, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .badge-status::before { content: ''; width: 6px; height: 6px; background: var(--accent-green); border-radius: 50%; display: inline-block; }
+
+        /* --- BLOQUES DE SECCIÓN --- */
+        .block-section {
+            background-color: var(--card-light);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-light);
+            margin-bottom: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+        }
+
+        .block-title {
+            padding: 15px;
+            font-size: 1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border-light);
+            background-color: rgba(0,0,0,0.01);
+            color: var(--accent-red);
+        }
+
+        /* --- ACORDEONES FLUIDOS --- */
+        .category-accordion {
+            border-bottom: 1px solid var(--border-light);
+        }
+        .category-accordion:last-child { border-bottom: none; }
+
+        .category-trigger {
+            padding: 16px 15px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            background: linear-gradient(90deg, rgba(139, 30, 15, 0.02) 0%, rgba(0,0,0,0) 100%);
+            color: var(--accent-red);
+        }
+        .category-trigger .arrow { transition: transform 0.3s; color: var(--accent-red); font-size: 0.8rem; }
+        
+        .category-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .category-accordion.active .category-content { max-height: 5000px; transition: max-height 0.4s ease-in; }
+        .category-accordion.active .category-trigger .arrow { transform: rotate(180deg); }
+
+        /* --- TARJETAS DE PRODUCTO --- */
+        .product-card {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .product-card:last-child { border-bottom: none; }
+        .product-main { display: flex; gap: 12px; }
+        
+        .product-image { width: 80px; height: 80px; border-radius: 8px; overflow: hidden; flex-shrink: 0; border: 1px solid var(--border-light); background-color: #f9f9f9; }
+        .product-image img { width: 100%; height: 100%; object-fit: cover; }
+
+        .product-details { flex-grow: 1; }
+        .product-name { font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; color: var(--text-main); }
+        .product-desc { font-size: 0.75rem; color: var(--text-muted); font-style: italic; line-height: 1.4; margin-bottom: 6px; }
+        .product-price { font-size: 1rem; font-weight: 700; color: var(--accent-gold); }
+
+        /* --- INTERFAZ DE COMBOS Y SELECCIONES DINÁMICAS --- */
+        .salsas-dynamic-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .unit-salsa-block {
+            background-color: #FAF8F5;
+            border: 1px solid var(--border-light);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .unit-salsa-title {
+            font-size: 0.72rem;
+            color: var(--accent-gold);
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .salsas-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+        .salsa-label {
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            border: 1px solid var(--border-light);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+        .salsa-label input { display: none; }
+        .salsa-label:has(input:checked) {
+            border-color: var(--accent-red);
+            background-color: rgba(139, 30, 15, 0.05);
+            color: var(--accent-red);
+        }
+
+        .product-action-row { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; gap: 8px; }
+        .controls-wrapper { display: flex; align-items: center; gap: 8px; }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+            padding: 3px 10px;
+            background-color: #FAF8F5;
+        }
+        .qty-btn { background: none; border: none; color: var(--text-main); font-size: 1.1rem; font-weight: 700; cursor: pointer; width: 20px;}
+        .qty-val { font-size: 0.9rem; font-weight: 700; min-width: 15px; text-align: center; }
+
+        .btn-trash-clear {
+            background-color: rgba(220, 53, 69, 0.05);
+            border: 1px solid rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            font-size: 0.85rem;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- BOTÓN PERSISTENTE ASOCIADO --- */
+        .btn-add-item {
+            background-color: var(--accent-red);
+            color: white;
+            border: 1px solid var(--accent-red);
+            padding: 7px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-add-item.is-added {
+            background-color: var(--accent-green) !important;
+            border-color: var(--accent-green) !important;
+            color: #ffffff !important;
+        }
+
+        /* --- FORMULARIOS --- */
+        .form-padding { padding: 15px; }
+        .input-group { margin-bottom: 12px; }
+        .input-group label { display: block; font-size: 0.75rem; color: var(--text-main); margin-bottom: 5px; font-weight: 700; text-transform: uppercase;}
+        .input-group input, .input-group select, .input-group textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background-color: #FAF8F5;
+            color: var(--text-main);
+            outline: none;
+        }
+        #cash-change-box {
+            background-color: rgba(184, 122, 19, 0.04);
+            border: 1px dashed var(--accent-gold);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* --- MÉTODOS DE PAGO --- */
+        .payment-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px; }
+        .payment-option {
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            background-color: #FAF8F5;
+        }
+        .payment-option.selected { border-color: var(--accent-green); background-color: rgba(30, 107, 56, 0.05); }
+        .payment-icon { width: 24px; height: 24px; display: flex; align-items: center; }
+        .payment-icon svg { width: 100%; height: 100%; }
+        .payment-name { font-size: 0.85rem; font-weight: 700; }
+
+        /* --- RESUMEN DEL PEDIDO --- */
+        .cart-padding { padding: 15px; }
+        .cart-empty { font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 10px 0; }
+        .cart-item-row { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 10px 0; border-bottom: 1px dashed var(--border-light); }
+        .cart-item-salsas { font-size: 0.75rem; color: var(--accent-gold); display: block; margin-top: 2px; }
+        
+        .summary-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 0.85rem; color: var(--text-muted); }
+        .summary-deliv-label { font-size: 0.85rem; }
+        .summary-total {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            border-top: 1px solid var(--border-light);
+            padding-top: 12px;
+            margin-top: 8px;
+        }
+        .total-amount { font-size: 1.1rem; color: var(--accent-red); font-weight: 700; }
+
+        /* --- BOTÓN FLOTANTE --- */
+        .btn-floating-container {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            padding: 15px;
+            background: linear-gradient(to top, rgba(244,239,230,1) 70%, rgba(244,239,230,0));
+            z-index: 999;
+        }
+        .btn-confirm-order {
+            background-color: var(--accent-green);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            width: 100%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(30, 107, 56, 0.25);
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <div class="app-header">
+        <div class="restaurant-name">Pulcinella</div>
+        <div class="badge-status">Abierto ahora</div>
+    </div>
+
+    <div class="block-section">
+        <div class="block-title">🍕 Arma tu Pedido Artesanal</div>
+        
+        <div class="category-accordion active" id="cate-pizzas-g">
+            <div class="category-trigger" onclick="toggleAccordion('cate-pizzas-g')">
+                <span>Pizzas Grandes (8 porciones)</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="category-content" id="box-pizzas-g"></div>
+        </div>
+
+        <div class="category-accordion" id="cate-pizzas-f">
+            <div class="category-trigger" onclick="toggleAccordion('cate-pizzas-f')">
+                <span>Pizzas Familiares (12 porciones)</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="category-content" id="box-pizzas-f"></div>
+        </div>
+
+        <div class="category-accordion" id="cate-combos">
+            <div class="category-trigger" onclick="toggleAccordion('cate-combos')">
+                <span>Combos Especiales</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="category-content">
+                
+                <div class="product-card" id="card-combo1">
+                    <div class="product-main">
+                        <div class="product-image"><img src="imagenes/combo1.jpg"></div>
+                        <div class="product-details">
+                            <div class="product-name">COMBO 1</div>
+                            <div class="product-desc">1 Pizza Grande (8 piezas) + 2 Calzones + 1 Gaseosa de 1 Litro.</div>
+                            <div class="product-price">S/ 50.00</div>
+                        </div>
+                    </div>
+                    <div class="salsas-dynamic-container" id="salsas-container-card-combo1"></div>
+                    <div class="product-action-row">
+                        <div class="controls-wrapper">
+                            <div class="quantity-control">
+                                <button class="qty-btn" onclick="changeQty('card-combo1', -1, 'COMBO 1')">−</button>
+                                <span class="qty-val" id="card-combo1-qty">1</span>
+                                <button class="qty-btn" onclick="changeQty('card-combo1', 1, 'COMBO 1')">+</button>
+                            </div>
+                            <button class="btn-trash-clear" onclick="clearProductCard('card-combo1', 'COMBO 1')">🗑️</button>
+                        </div>
+                        <button class="btn-add-item" id="btn-card-combo1" onclick="addToCart('COMBO 1', 50.00, 'card-combo1', false, 'combo')">Agregar</button>
+                    </div>
+                </div>
+
+                <div class="product-card" id="card-combo2">
+                    <div class="product-main">
+                        <div class="product-image"><img src="imagenes/combo2.jpg"></div>
+                        <div class="product-details">
+                            <div class="product-name">COMBO 2</div>
+                            <div class="product-desc">2 Pizzas Grandes (8 piezas) + 1 Calzone + 1 Gaseosa de 1 Litro.</div>
+                            <div class="product-price">S/ 65.00</div>
+                        </div>
+                    </div>
+                    <div class="salsas-dynamic-container" id="salsas-container-card-combo2"></div>
+                    <div class="product-action-row">
+                        <div class="controls-wrapper">
+                            <div class="quantity-control">
+                                <button class="qty-btn" onclick="changeQty('card-combo2', -1, 'COMBO 2')">−</button>
+                                <span class="qty-val" id="card-combo2-qty">1</span>
+                                <button class="qty-btn" onclick="changeQty('card-combo2', 1, 'COMBO 2')">+</button>
+                            </div>
+                            <button class="btn-trash-clear" onclick="clearProductCard('card-combo2', 'COMBO 2')">🗑️</button>
+                        </div>
+                        <button class="btn-add-item" id="btn-card-combo2" onclick="addToCart('COMBO 2', 65.00, 'card-combo2', false, 'combo')">Agregar</button>
+                    </div>
+                </div>
+
+                <div class="product-card" id="card-combo3">
+                    <div class="product-main">
+                        <div class="product-image"><img src="imagenes/combo3.jpg"></div>
+                        <div class="product-details">
+                            <div class="product-name">COMBO 3</div>
+                            <div class="product-desc">2 Pizzas Familiares (12 piezas) + 2 Calzones + 1 Gaseosa de 1 Litro + Pan al Ajo (7 und).</div>
+                            <div class="product-price">S/ 95.00</div>
+                        </div>
+                    </div>
+                    <div class="salsas-dynamic-container" id="salsas-container-card-combo3"></div>
+                    <div class="product-action-row">
+                        <div class="controls-wrapper">
+                            <div class="quantity-control">
+                                <button class="qty-btn" onclick="changeQty('card-combo3', -1, 'COMBO 3')">−</button>
+                                <span class="qty-val" id="card-combo3-qty">1</span>
+                                <button class="qty-btn" onclick="changeQty('card-combo3', 1, 'COMBO 3')">+</button>
+                            </div>
+                            <button class="btn-trash-clear" onclick="clearProductCard('card-combo3', 'COMBO 3')">🗑️</button>
+                        </div>
+                        <button class="btn-add-item" id="btn-card-combo3" onclick="addToCart('COMBO 3', 95.00, 'card-combo3', false, 'combo')">Agregar</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="category-accordion" id="cate-pastas">
+            <div class="category-trigger" onclick="toggleAccordion('cate-pastas')">
+                <span>Pastas Artesanales</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="category-content" id="box-pastas"></div>
+        </div>
+
+        <div class="category-accordion" id="cate-horneados">
+            <div class="category-trigger" onclick="toggleAccordion('cate-horneados')">
+                <span>Panes y Horneados</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="category-content" id="box-horneados"></div>
+        </div>
+
+        <div class="category-accordion" id="cate-bebidas">
+            <div class="category-trigger" onclick="toggleAccordion('cate-bebidas')">
+                <span>Bebidas</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="category-content" id="box-bebidas"></div>
+        </div>
+
+    </div>
+
+    <div class="block-section">
+        <div class="block-title">👤 Tus Datos de Entrega</div>
+        <div class="form-padding">
+            <div class="input-group">
+                <label>Nombre completo</label>
+                <input type="text" id="client-name" placeholder="Ej. Juan Pérez">
+            </div>
+            <div class="input-group">
+                <label>Teléfono / WhatsApp</label>
+                <input type="tel" id="client-phone" placeholder="Ej. 987654321">
+            </div>
+            <div class="input-group">
+                <label>Dirección de entrega</label>
+                <input type="text" id="client-address" placeholder="Ej. Av. Universitaria 1420">
+            </div>
+            <div class="input-group">
+                <label>Referencia de ubicación (Opcional)</label>
+                <input type="text" id="client-reference" placeholder="Ej. Frente al parque, fachada verde">
+            </div>
+            <div class="input-group">
+                <label>Zona de delivery</label>
+                <select id="delivery-zone" onchange="renderCart()">
+                    <option value="3.00" data-name="Zona 1: San Miguel" selected>Zona 1 (San Miguel) - S/ 3.00</option>
+                    <option value="5.00" data-name="Zona 2: Magdalena">Zona 2 (Magdalena) - S/ 5.00</option>
+                    <option value="0.00" data-name="Recojo en Local">Recojo en Local - S/ 0.00</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Notas adicionales para el pizzero</label>
+                <textarea id="client-notes" rows="2" placeholder="Ej. Tocar timbre de metal, traer gaseosa helada..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="block-section">
+        <div class="block-title">💳 Método de Pago</div>
+        <div class="payment-grid">
+            <div class="payment-option selected" data-method="Yape" onclick="selectPayment(this, 'Yape')">
+                <div class="payment-icon">
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="8" fill="#742384"/><path d="M26 12h-3.5l-3.5 6.5-3.5-6.5H12l5.5 9.5V28h3v-6.5z" fill="#00D2C2"/></svg>
+                </div>
+                <span class="payment-name">Yape</span>
+            </div>
+            <div class="payment-option" data-method="Plin" onclick="selectPayment(this, 'Plin')">
+                <div class="payment-icon">
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="8" fill="#FF5E00"/><circle cx="20" cy="20" r="10" fill="#FFF"/><path d="M16 15h3a3 3 0 110 6h-3v4h-2zm3 4a1 1 0 100-2h-1v2z" fill="#FF5E00"/><path d="M22 15h2v10h-2z" fill="#FF5E00"/></svg>
+                </div>
+                <span class="payment-name">Plin</span>
+            </div>
+            <div class="payment-option" data-method="Tarjeta" onclick="selectPayment(this, 'Tarjeta')">
+                <div class="payment-icon" style="font-size: 1.2rem;">💳</div>
+                <span class="payment-name">Tarjeta</span>
+            </div>
+            <div class="payment-option" data-method="Efectivo" onclick="selectPayment(this, 'Efectivo')">
+                <div class="payment-icon" style="font-size: 1.2rem;">💵</div>
+                <span class="payment-name">Efectivo</span>
+            </div>
+        </div>
+        
+        <div style="padding: 0 15px 15px 15px;">
+            <div id="cash-change-box">
+                <div class="input-group">
+                    <label style="color: var(--accent-gold);">¿Con cuánto vas a pagar?</label>
+                    <input type="number" id="cash-amount" placeholder="Ej: 100" min="0">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="block-section">
+        <div class="block-title">🧾 Resumen de tu Pedido</div>
+        <div class="cart-padding">
+            <div id="cart-items-container">
+                <div class="cart-empty">Aún no has agregado productos</div>
+            </div>
+            
+            <div class="summary-row" style="margin-top: 10px;">
+                <span id="summary-deliv-label">Delivery (Zona 1: San Miguel)</span>
+                <span id="summary-deliv-price">S/ 3.00</span>
+            </div>
+            
+            <div class="summary-row summary-total">
+                <span>TOTAL A PAGAR:</span>
+                <span class="total-amount">S/ <span id="total-val">3.00</span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="btn-floating-container">
+        <button class="btn-confirm-order" onclick="sendOrder()">
+            Enviar Pedido por WhatsApp
+        </button>
+    </div>
+
+</div>
+
+<script>
+    let cart = [];
+    let selectedPayment = "Yape";
+    let productQuantities = {};
+    let addedProductsRegistry = {};
+    
+    // Almacenamiento interno preciso de selecciones de pizza por cada combo
+    let seleccionesCombosInternos = {};
+
+    const PIZZAS_MAESTRAS = [
+        { id: 'pulcinella', name: 'Pulcinella', desc: 'Mozarella, tocino, salame, cebolla blanca, aceituna y pimiento.' },
+        { id: 'dona-carmela', name: 'Doña Carmela', desc: 'Mozarella, jamón, tocino ahumado y champiñones.' },
+        { id: 'vesubio', name: 'Vesubio', desc: 'Mozarella, pepperoni, carne, aceituna y pimiento.' },
+        { id: 'americana', name: 'Americana', desc: 'Mozarella, jamón, aceituna y pimiento.' },
+        { id: 'hawaiana', name: 'Hawaiana', desc: 'Mozarella, jamón, piña, aceituna y pimiento.' },
+        { id: 'vegetariana', name: 'Vegetariana', desc: 'Mozarella, champiñones, pimiento, cebolla, aceituna y zapallo italiano.' },
+        { id: 'margheritta', name: 'Margherita', desc: 'Mozarella, tomate en rodajas, albahaca y aceite de oliva.' },
+        { id: 'carnivora', name: 'Carnívora', desc: 'Mozarella, carne de res, jamón, tocino ahumado y pepperoni.' },
+        { id: 'pepperoni', name: 'Pepperoni', desc: 'Mozarella y pepperoni.' }
+    ];
+
+    const OP_COMBOS = {
+        'card-combo1': { name: 'COMBO 1', baseLimit: 1, options: ['Americana', 'Pepperoni'] },
+        'card-combo2': { name: 'COMBO 2', baseLimit: 2, options: ['Americana', 'Pepperoni'] },
+        'card-combo3': { name: 'COMBO 3', baseLimit: 2, options: ['Americana', 'Pepperoni'] }
+    };
+
+    function toggleAccordion(id) {
+        document.getElementById(id).classList.toggle('active');
+    }
+
+    // RENDERIZADO COMPLETO Y CORREGIDO DE SECCIONES
+    function renderSeccionesCatalogo() {
+        let boxG = '', boxF = '', boxPastas = '', boxHorneados = '', boxBebidas = '';
+
+        // Pizzas Grandes y Familiares
+        PIZZAS_MAESTRAS.forEach(p => {
+            // Grandes
+            boxG += crearEstructuraHTMLCard(`${p.id}-grande`, `${p.name} Grande`, p.desc, 27.00, p.id, 'pizza');
+            // Familiares (¡Corregido de forma limpia!)
+            boxF += crearEstructuraHTMLCard(`${p.id}-familiar`, `${p.name} Familiar`, p.desc, 37.00, p.id, 'pizza');
+        });
+
+        // Pastas
+        let pastas = [
+            { id: 'ravioles', name: 'Ravioles', desc: 'Acompañados de tu salsa artesanal favorita.', price: 25 },
+            { id: 'fettuccine', name: 'Fettuccine', desc: 'Fideos artesanales con insumos premium.', price: 25 },
+            { id: 'lasagna', name: 'Lasagna', desc: 'Capas intercaladas de pasta, carne bolognesa y queso.', price: 25 }
+        ];
+        pastas.forEach(pas => {
+            boxPastas += crearEstructuraHTMLCard(pas.id, pas.name, pas.desc, pas.price, pas.id, 'pasta');
+        });
+
+        // Horneados
+        let horneados = [
+            { id: 'pan-ajo', name: 'Pan al Ajo (7 unidades)', desc: 'Pan crocante con nuestra mantequilla de ajo especial.', price: 5 },
+            { id: 'pan-ajo-especial', name: 'Pan al Ajo Especial', desc: 'Con mozarella fundida, tocino picado y parmiggiano.', price: 9 },
+            { id: 'calzone', name: 'Calzone Tradicional', desc: 'Masa artesanal rellena y horneada al momento.', price: 12 }
+        ];
+        horneados.forEach(h => {
+            boxHorneados += crearEstructuraHTMLCard(h.id, h.name, h.desc, h.price, h.id, 'simple');
+        });
+
+        // Bebidas
+        boxBebidas += crearEstructuraHTMLCard('pepsi-600ml', 'Pepsi 600ml', 'Helada y refrescante.', 6.00, 'pepsi-600ml', 'simple');
+
+        document.getElementById('box-pizzas-g').innerHTML = boxG;
+        document.getElementById('box-pizzas-f').innerHTML = boxF;
+        document.getElementById('box-pastas').innerHTML = boxPastas;
+        document.getElementById('box-horneados').innerHTML = boxHorneados;
+        document.getElementById('box-bebidas').innerHTML = boxBebidas;
+    }
+
+    function crearEstructuraHTMLCard(id, name, desc, price, imgName, type) {
+        return `
+            <div class="product-card" id="${id}">
+                <div class="product-main">
+                    <div class="product-image"><img src="imagenes/${imgName}.jpg"></div>
+                    <div class="product-details">
+                        <div class="product-name">${name}</div>
+                        <div class="product-desc">${desc}</div>
+                        <div class="product-price">S/ ${price.toFixed(2)}</div>
+                    </div>
+                </div>
+                <div class="salsas-dynamic-container" id="salsas-container-${id}"></div>
+                <div class="product-action-row">
+                    <div class="controls-wrapper">
+                        <div class="quantity-control">
+                            <button class="qty-btn" onclick="changeQty('${id}', -1, '${name}')">−</button>
+                            <span class="qty-val" id="${id}-qty">1</span>
+                            <button class="qty-btn" onclick="changeQty('${id}', 1, '${name}')">+</button>
+                        </div>
+                        <button class="btn-trash-clear" onclick="clearProductCard('${id}', '${name}')">🗑️</button>
+                    </div>
+                    <button class="btn-add-item" id="btn-${id}" onclick="addToCart('${name}', ${price}, '${id}', false, '${type}')">Agregar</button>
+                </div>
+            </div>
+        `;
+    }
+
+    // CONTROL UNITARIO DE OPCIONES (SALSAS O PIZZAS DE COMBOS)
+    function generateDynamicBlocks(productId, currentQty, productName, type) {
+        const container = document.getElementById(`salsas-container-${productId}`);
+        if(!container) return; 
+        container.innerHTML = '';
+
+        if (type === 'pasta') {
+            for (let i = 1; i <= currentQty; i++) {
+                let radioHTML = `
+                    <div class="salsas-grid">
+                        <label class="salsa-label"><input type="radio" name="op-${productId}-u${i}" value="Alfredo" checked onchange="handleLiveCardUpdate('${productId}', '${productName}', '${type}')"> Alfredo</label>
+                        <label class="salsa-label"><input type="radio" name="op-${productId}-u${i}" value="Bolognesa" onchange="handleLiveCardUpdate('${productId}', '${productName}', '${type}')"> Bolognesa</label>
+                    </div>`;
+                container.innerHTML += `
+                    <div class="unit-salsa-block">
+                        <div class="unit-salsa-title">${currentQty === 1 ? 'Salsa para tu Pasta' : `Salsa para Pasta 0${i}`}</div>
+                        ${radioHTML}
+                    </div>`;
+            }
+        } 
+        else if (type === 'combo') {
+            let limitBase = OP_COMBOS[productId].baseLimit;
+            let maxTotalAllowed = currentQty * limitBase;
+
+            if (!seleccionesCombosInternos[productId]) {
+                seleccionesCombosInternos[productId] = { 'Americana': 0, 'Pepperoni': 0 };
+            }
+
+            let comboState = seleccionesCombosInternos[productId];
+            let sumaActual = Object.values(comboState).reduce((a, b) => a + b, 0);
+
+            if (sumaActual > maxTotalAllowed) {
+                comboState['Americana'] = 0;
+                comboState['Pepperoni'] = 0;
+                sumaActual = 0;
+            }
+
+            let itemsHTML = '';
+            OP_COMBOS[productId].options.forEach(pizzaOpt => {
+                let currentVal = comboState[pizzaOpt] || 0;
+                let isPlusDisabled = (sumaActual >= maxTotalAllowed) ? 'disabled' : '';
+
+                itemsHTML += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; margin-bottom: 6px;">
+                        <span style="font-weight: 700; color: var(--text-main);">${pizzaOpt}</span>
+                        <div class="quantity-control" style="padding: 2px 8px; gap: 8px;">
+                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changeInternalComboQty('${productId}','${pizzaOpt}', -1, ${maxTotalAllowed}, '${productName}', '${type}')">−</button>
+                            <span class="qty-val" style="font-size:0.8rem;" id="qty-${productId}-${pizzaOpt}">${currentVal}</span>
+                            <button class="qty-btn" style="font-size:0.9rem;" id="plus-${productId}-${pizzaOpt}" ${isPlusDisabled} onclick="changeInternalComboQty('${productId}','${pizzaOpt}', 1, ${maxTotalAllowed}, '${productName}', '${type}')">+</button>
+                        </div>
+                    </div>`;
+            });
+
+            container.innerHTML = `
+                <div class="unit-salsa-block">
+                    <div class="unit-salsa-title">Escoge tus Pizzas (Elegidas: ${sumaActual} de ${maxTotalAllowed})</div>
+                    <div style="display:flex; flex-direction:column; gap: 4px; margin-top: 5px;">${itemsHTML}</div>
+                </div>`;
+        }
+    }
+
+    function changeInternalComboQty(productId, pizzaOpt, change, maxTotalAllowed, productName, type) {
+        let comboState = seleccionesCombosInternos[productId];
+        let sumaActual = Object.values(comboState).reduce((a, b) => a + b, 0);
+
+        if (change === 1 && sumaActual >= maxTotalAllowed) return;
+
+        let nuevoValor = (comboState[pizzaOpt] || 0) + change;
+        if (nuevoValor < 0) nuevoValor = 0;
+
+        comboState[pizzaOpt] = nuevoValor;
+        
+        generateDynamicBlocks(productId, productQuantities[productId] || 1, productName, type);
+        handleLiveCardUpdate(productId, productName, type);
+    }
+
+    function changeQty(productId, amount, productName) {
+        let type = 'simple';
+        if (productId.startsWith('card-combo')) type = 'combo';
+        else if (productId === 'ravioles' || productId === 'fettuccine' || productId === 'lasagna') type = 'pasta';
+
+        if (!productQuantities[productId]) productQuantities[productId] = 1;
+        productQuantities[productId] += amount;
+        if (productQuantities[productId] < 1) productQuantities[productId] = 1;
+        
+        document.getElementById(`${productId}-qty`).innerText = productQuantities[productId];
+        
+        if (type === 'pasta' || type === 'combo') {
+            generateDynamicBlocks(productId, productQuantities[productId], productName, type);
+        }
+        
+        handleLiveCardUpdate(productId, productName, type);
+    }
+
+    function handleLiveCardUpdate(productId, productName, type) {
+        if (!addedProductsRegistry[productId]) return; 
+
+        let priceElement = document.getElementById(productId).querySelector('.product-price');
+        let price = parseFloat(priceElement.innerText.replace('S/ ', ''));
+        const qty = productQuantities[productId] || 1;
+
+        cart = cart.filter(item => item.productCardId !== productId);
+
+        if (type === 'simple' || type === 'pizza') {
+            cart.push({
+                productCardId: productId,
+                name: productName,
+                price: price,
+                qty: qty,
+                optionsText: (type === 'pizza') ? 'Sabor Tradicional 🍕' : 'Horneado al toque',
+                type: type
+            });
+        } 
+        else if (type === 'pasta') {
+            const container = document.getElementById(`salsas-container-${productId}`);
+            for (let i = 1; i <= qty; i++) {
+                let salsaElegida = 'Alfredo';
+                if (container) {
+                    let checkedRadio = container.querySelector(`input[name="op-${productId}-u${i}"]:checked`);
+                    if(checkedRadio) salsaElegida = checkedRadio.value;
+                }
+                cart.push({
+                    productCardId: productId,
+                    name: productName,
+                    price: price,
+                    qty: 1, 
+                    optionsText: `Salsa: ${salsaElegida}`,
+                    type: type
+                });
+            }
+        } 
+        else if (type === 'combo') {
+            let comboState = seleccionesCombosInternos[productId] || { 'Americana': 0, 'Pepperoni': 0 };
+            let subElegidas = [];
+            if(comboState['Americana'] > 0) subElegidas.push(`${comboState['Americana']} Americana(s)`);
+            if(comboState['Pepperoni'] > 0) subElegidas.push(`${comboState['Pepperoni']} Pepperoni(s)`);
+            
+            let txtOpciones = subElegidas.length > 0 ? `Pizzas: ${subElegidas.join(' / ')}` : 'Sin elegir pizzas todavía';
+
+            cart.push({
+                productCardId: productId,
+                name: productName,
+                price: price,
+                qty: qty,
+                optionsText: txtOpciones,
+                type: type,
+                state: { ...comboState }
+            });
+        }
+        renderCart();
+    }
+
+    function clearProductCard(productId, productName) {
+        let type = 'simple';
+        if (productId.startsWith('card-combo')) type = 'combo';
+        else if (productId === 'ravioles' || productId === 'fettuccine' || productId === 'lasagna') type = 'pasta';
+
+        cart = cart.filter(item => item.productCardId !== productId);
+        delete addedProductsRegistry[productId];
+
+        if (type === 'combo') {
+            seleccionesCombosInternos[productId] = { 'Americana': 0, 'Pepperoni': 0 };
+        }
+
+        const targetButton = document.getElementById(`btn-${productId}`);
+        if (targetButton) {
+            targetButton.innerText = "Agregar";
+            targetButton.classList.remove("is-added");
+        }
+
+        productQuantities[productId] = 1;
+        const qtyElement = document.getElementById(`${productId}-qty`);
+        if (qtyElement) qtyElement.innerText = 1;
+
+        if (type === 'pasta' || type === 'combo') {
+            generateDynamicBlocks(productId, 1, productName, type);
+        }
+
+        renderCart();
+    }
+
+    function addToCart(name, price, containerId, isBeverage, type) {
+        addedProductsRegistry[containerId] = true; 
+        const targetButton = document.getElementById(`btn-${containerId}`);
+        if (targetButton) {
+            targetButton.innerText = "Agregado ✔";
+            targetButton.classList.add("is-added");
+        }
+        handleLiveCardUpdate(containerId, name, type);
+    }
+
+    function renderCart() {
+        const container = document.getElementById('cart-items-container');
+        const deliverySelect = document.getElementById('delivery-zone');
+        
+        if (cart.length === 0) {
+            container.innerHTML = '<div class="cart-empty">Aún no has agregado productos</div>';
+            document.getElementById('total-val').innerText = parseFloat(deliverySelect.value).toFixed(2);
+            return;
+        }
+
+        container.innerHTML = '';
+        let subtotal = 0;
+
+        cart.forEach((item, index) => {
+            let itemCost = item.price * item.qty;
+            subtotal += itemCost;
+
+            container.innerHTML += `
+                <div class="cart-item-row">
+                    <div>
+                        <strong>${item.qty < 10 ? '0' + item.qty : item.qty} x ${item.name}</strong>
+                        <span class="cart-item-salsas">${item.optionsText}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        S/ ${itemCost.toFixed(2)}
+                        <span style="color:var(--accent-red); cursor:pointer; font-weight:bold; font-size:1.2rem; padding: 0 5px;" onclick="removeItemFromSummary(${index}, '${item.productCardId}', '${item.name}', '${item.type}')">×</span>
+                    </div>
+                </div>
+            `;
+        });
+
+        let deliveryCost = parseFloat(deliverySelect.value);
+        let selectedZoneName = deliverySelect.options[deliverySelect.selectedIndex].getAttribute('data-name');
+        
+        document.getElementById('summary-deliv-label').innerText = `Delivery (${selectedZoneName})`;
+        document.getElementById('summary-deliv-price').innerText = `S/ ${deliveryCost.toFixed(2)}`;
+        
+        let total = subtotal + deliveryCost;
+        document.getElementById('total-val').innerText = total.toFixed(2);
+    }
+
+    function removeItemFromSummary(index, productCardId, name, type) {
+        cart.splice(index, 1);
+        renderCart();
+
+        const cardStillActive = cart.some(item => item.productCardId === productCardId);
+        if (!cardStillActive) {
+            delete addedProductsRegistry[productCardId];
+            const btn = document.getElementById(`btn-${productCardId}`);
+            if (btn) {
+                btn.innerText = "Agregar";
+                btn.classList.remove("is-added");
+            }
+            productQuantities[productCardId] = 1;
+            const qtyElement = document.getElementById(`${productCardId}-qty`);
+            if (qtyElement) qtyElement.innerText = 1;
+
+            if (type === 'combo') {
+                seleccionesCombosInternos[productCardId] = { 'Americana': 0, 'Pepperoni': 0 };
+            }
+
+            if (type === 'pasta' || type === 'combo') {
+                generateDynamicBlocks(productCardId, 1, name, type);
+            }
+        }
+    }
+
+    function selectPayment(element, method) {
+        document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+        element.classList.add('selected');
+        selectedPayment = method;
+
+        const cashBox = document.getElementById('cash-change-box');
+        if (method === "Efectivo") {
+            cashBox.style.display = 'block';
+        } else {
+            cashBox.style.display = 'none';
+            document.getElementById('cash-amount').value = '';
+        }
+    }
+
+    function sendOrder() {
+        const name = document.getElementById('client-name').value.trim();
+        const phone = document.getElementById('client-phone').value.trim();
+        const address = document.getElementById('client-address').value.trim();
+        const reference = document.getElementById('client-reference').value.trim();
+        let notes = document.getElementById('client-notes').value.trim();
+        const deliverySelect = document.getElementById('delivery-zone');
+        const zoneText = deliverySelect.options[deliverySelect.selectedIndex].getAttribute('data-name');
+        const cashAmount = document.getElementById('cash-amount').value.trim();
+
+        if(cart.length === 0) {
+            alert("El resumen del pedido está vacío. Agrega tus pizzas primero.");
+            return;
+        }
+        if(!name || !phone || !address) {
+            alert("Por favor, rellena los campos obligatorios de tus datos.");
+            return;
+        }
+
+        for (let item of cart) {
+            if (item.type === 'combo') {
+                let limitBase = OP_COMBOS[item.productCardId].baseLimit;
+                let esperado = item.qty * limitBase;
+                let comboState = seleccionesCombosInternos[item.productCardId] || { 'Americana': 0, 'Pepperoni': 0 };
+                let elegidas = Object.values(comboState).reduce((a, b) => a + b, 0);
+
+                if (elegidas !== esperado) {
+                    alert(`Por favor, termina de elegir las pizzas para el ${item.name}. Has elegido ${elegidas} de las ${esperado} requeridas.`);
+                    return;
+                }
+            }
+        }
+
+        if (selectedPayment === "Efectivo") {
+            if (cashAmount) {
+                const totalPedido = parseFloat(document.getElementById('total-val').innerText);
+                if (parseFloat(cashAmount) < totalPedido) {
+                    alert(`El monto de pago (S/ ${cashAmount}) no puede ser menor al total del pedido (S/ ${totalPedido.toFixed(2)})`);
+                    return;
+                }
+                const vuelto = parseFloat(cashAmount) - totalPedido;
+                notes = `[PAGA CON: S/ ${cashAmount} - LLEVAR VUELTO DE: S/ ${vuelto.toFixed(2)}] ${notes ? '\n' + notes : ''}`;
+            } else {
+                notes = `[PAGA CON EFECTIVO - REQUIERE CAMBIO] ${notes ? '\n' + notes : ''}`;
+            }
+        }
+
+        let consolidatedObject = {};
+        cart.forEach(item => {
+            let key = item.name + "|" + item.optionsText;
+            if (!consolidatedObject[key]) {
+                consolidatedObject[key] = { name: item.name, qty: 0, price: item.price, optionsText: item.optionsText };
+            }
+            consolidatedObject[key].qty += item.qty;
+        });
+
+        let resumenProductos = "";
+        Object.values(consolidatedObject).forEach(item => {
+            resumenProductos += `* ${item.qty < 10 ? '0' + item.qty : item.qty} x ${item.name} (S/ ${(item.price * item.qty).toFixed(2)})\n`;
+            resumenProductos += `   └ _${item.optionsText}_\n`;
+        });
+
+        let direccionCompleta = reference ? `${address} (${zoneText}) [Ref: ${reference}]` : `${address} (${zoneText})`;
+
+        let outputText = `📌 *NUEVO PEDIDO WEB - PULCINELLA*\n\n👤 *Cliente:* ${name}\n📞 *Teléfono:* ${phone}\n📍 *Dirección:* ${direccionCompleta}\n${notes ? `📝 *Notas:* ${notes}\n` : ''}\n🛒 *DETALLE:*\n${resumenProductos}\n📦 *Delivery:* S/ ${parseFloat(deliverySelect.value).toFixed(2)}\n💰 *TOTAL:* S/ ${document.getElementById('total-val').innerText}\n💳 *Pago:* ${selectedPayment}`;
+        
+        let nroWhatsApp = "51922529592"; // Endpoint oficial WhatsApp de Pulcinella
+        let url = `https://api.whatsapp.com/send?phone=${nroWhatsApp}&text=${encodeURIComponent(outputText)}`;
+        window.open(url, '_blank');
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        renderSeccionesCatalogo();
+
+        generateDynamicBlocks('card-combo1', 1, 'COMBO 1', 'combo');
+        generateDynamicBlocks('card-combo2', 1, 'COMBO 2', 'combo');
+        generateDynamicBlocks('card-combo3', 1, 'COMBO 3', 'combo');
+        
+        ['card-combo1', 'card-combo2', 'card-combo3'].forEach(id => {
+            productQuantities[id] = 1;
+        });
+    });
+</script>
+
+</body>
+</html>
