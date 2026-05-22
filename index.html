@@ -12,7 +12,7 @@
         :root {
             --bg-claro: #F4EFE6; /* Tono crema base */
             --card-light: #ffffff;
-            --accent-red: #8B1E0F; /* Rojo artesanal Pulcinella */
+            --accent-red: #8B1E0F; /* Rojo Pulcinella */
             --accent-gold: #B87A13;
             --accent-green: #1E6B38;
             --text-main: #2C2C2C;
@@ -52,7 +52,7 @@
             padding-bottom: 100px; 
         }
 
-        /* --- CABECERA PREMIUM --- */
+        /* --- CABECERA CON LOGO REAL --- */
         .app-header {
             background-image: linear-gradient(to bottom, rgba(244,239,230,0.1), rgba(244,239,230,0.95)), 
                               url('imagenes/hero.jpg');
@@ -67,15 +67,14 @@
             text-align: center;
             margin-bottom: 15px;
             border: 1px solid var(--border-light);
+            padding: 10px;
         }
 
-        .restaurant-name { 
-            font-size: 1.8rem; 
-            font-weight: 700; 
-            color: var(--accent-red);
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            text-shadow: 0 1px 4px rgba(255,255,255,0.8); 
+        .restaurant-logo {
+            max-width: 180px;
+            max-height: 90px;
+            object-fit: contain;
+            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));
         }
 
         .badge-status {
@@ -85,7 +84,7 @@
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 700;
-            margin-top: 6px;
+            margin-top: 8px;
             border: 1px solid rgba(30, 107, 56, 0.3);
             display: flex;
             align-items: center;
@@ -135,7 +134,7 @@
         .category-trigger .arrow { transition: transform 0.3s; color: var(--accent-red); font-size: 0.8rem; }
         
         .category-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-        .category-accordion.active .category-content { max-height: 5000px; transition: max-height 0.4s ease-in; }
+        .category-accordion.active .category-content { max-height: 6000px; transition: max-height 0.4s ease-in; }
         .category-accordion.active .category-trigger .arrow { transform: rotate(180deg); }
 
         /* --- TARJETAS DE PRODUCTO --- */
@@ -157,7 +156,35 @@
         .product-desc { font-size: 0.75rem; color: var(--text-muted); font-style: italic; line-height: 1.4; margin-bottom: 6px; }
         .product-price { font-size: 1rem; font-weight: 700; color: var(--accent-gold); }
 
-        /* --- INTERFAZ DE COMBOS Y SELECCIONES DINÁMICAS --- */
+        /* --- CONTROLES HORIZONTALES UNIFICADOS PARA PIZZAS --- */
+        .pizza-size-selectors-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 4px;
+        }
+        .size-box {
+            flex: 1;
+            background-color: #FAF8F5;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .size-title-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-transform: uppercase;
+        }
+        .size-action-inline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* --- INTERFAZ DINÁMICA DE COMBOS Y PASTAS --- */
         .salsas-dynamic-container {
             display: flex;
             flex-direction: column;
@@ -227,7 +254,7 @@
             justify-content: center;
         }
 
-        /* --- BOTÓN PERSISTENTE ASOCIADO --- */
+        /* --- BOTONES DE AGREGADO --- */
         .btn-add-item {
             background-color: var(--accent-red);
             color: white;
@@ -294,7 +321,6 @@
         .cart-item-salsas { font-size: 0.75rem; color: var(--accent-gold); display: block; margin-top: 2px; }
         
         .summary-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 0.85rem; color: var(--text-muted); }
-        .summary-deliv-label { font-size: 0.85rem; }
         .summary-total {
             font-weight: 700;
             font-size: 0.95rem;
@@ -341,32 +367,24 @@
 <div class="app-container">
     
     <div class="app-header">
-        <div class="restaurant-name">Pulcinella</div>
+        <img src="imagenes/logo-pulcinella.png" alt="Pulcinella" class="restaurant-logo">
         <div class="badge-status">Abierto ahora</div>
     </div>
 
     <div class="block-section">
-        <div class="block-title">🍕 Arma tu Pedido Artesanal</div>
+        <div class="block-title">🍕 Todas las pizzas al mismo precio</div>
         
-        <div class="category-accordion active" id="cate-pizzas-g">
-            <div class="category-trigger" onclick="toggleAccordion('cate-pizzas-g')">
-                <span>Pizzas Grandes (8 porciones)</span>
+        <div class="category-accordion active" id="cate-pizzas">
+            <div class="category-trigger" onclick="toggleAccordion('cate-pizzas')">
+                <span>Pizzas</span>
                 <span class="arrow">▼</span>
             </div>
-            <div class="category-content" id="box-pizzas-g"></div>
-        </div>
-
-        <div class="category-accordion" id="cate-pizzas-f">
-            <div class="category-trigger" onclick="toggleAccordion('cate-pizzas-f')">
-                <span>Pizzas Familiares (12 porciones)</span>
-                <span class="arrow">▼</span>
-            </div>
-            <div class="category-content" id="box-pizzas-f"></div>
+            <div class="category-content" id="box-pizzas-unificado"></div>
         </div>
 
         <div class="category-accordion" id="cate-combos">
             <div class="category-trigger" onclick="toggleAccordion('cate-combos')">
-                <span>Combos Especiales</span>
+                <span>Combos</span>
                 <span class="arrow">▼</span>
             </div>
             <div class="category-content">
@@ -445,7 +463,7 @@
 
         <div class="category-accordion" id="cate-pastas">
             <div class="category-trigger" onclick="toggleAccordion('cate-pastas')">
-                <span>Pastas Artesanales</span>
+                <span>Pastas</span>
                 <span class="arrow">▼</span>
             </div>
             <div class="category-content" id="box-pastas"></div>
@@ -571,7 +589,7 @@
     let productQuantities = {};
     let addedProductsRegistry = {};
     
-    // Almacenamiento interno preciso de selecciones de pizza por cada combo
+    // Almacenamiento preciso de selecciones de pizza por cada combo e id unificado
     let seleccionesCombosInternos = {};
 
     const PIZZAS_MAESTRAS = [
@@ -581,7 +599,7 @@
         { id: 'americana', name: 'Americana', desc: 'Mozarella, jamón, aceituna y pimiento.' },
         { id: 'hawaiana', name: 'Hawaiana', desc: 'Mozarella, jamón, piña, aceituna y pimiento.' },
         { id: 'vegetariana', name: 'Vegetariana', desc: 'Mozarella, champiñones, pimiento, cebolla, aceituna y zapallo italiano.' },
-        { id: 'margheritta', name: 'Margherita', desc: 'Mozarella, tomate en rodajas, albahaca y aceite de oliva.' },
+        { id: 'margherita', name: 'Margherita', desc: 'Mozarella, tomate en rodajas, albahaca y aceite de oliva.' },
         { id: 'carnivora', name: 'Carnívora', desc: 'Mozarella, carne de res, jamón, tocino ahumado y pepperoni.' },
         { id: 'pepperoni', name: 'Pepperoni', desc: 'Mozarella y pepperoni.' }
     ];
@@ -596,21 +614,60 @@
         document.getElementById(id).classList.toggle('active');
     }
 
-    // RENDERIZADO COMPLETO Y CORREGIDO DE SECCIONES
+    // RENDERIZADO CON CARD DE DOBLE SELECTOR HORIZONTAL UNIFICADO
     function renderSeccionesCatalogo() {
-        let boxG = '', boxF = '', boxPastas = '', boxHorneados = '', boxBebidas = '';
+        let boxPizzasUnificado = '', boxPastas = '', boxHorneados = '', boxBebidas = '';
 
-        // Pizzas Grandes y Familiares
+        // Render unificado de Pizzas con selectores independientes
         PIZZAS_MAESTRAS.forEach(p => {
-            // Grandes
-            boxG += crearEstructuraHTMLCard(`${p.id}-grande`, `${p.name} Grande`, p.desc, 27.00, p.id, 'pizza');
-            // Familiares (¡Corregido de forma limpia!)
-            boxF += crearEstructuraHTMLCard(`${p.id}-familiar`, `${p.name} Familiar`, p.desc, 37.00, p.id, 'pizza');
+            boxPizzasUnificado += `
+                <div class="product-card" id="card-pizza-${p.id}">
+                    <div class="product-main">
+                        <div class="product-image"><img src="imagenes/${p.id}.jpg"></div>
+                        <div class="product-details">
+                            <div class="product-name">${p.name}</div>
+                            <div class="product-desc">${p.desc}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="pizza-size-selectors-row">
+                        <div class="size-box">
+                            <div class="size-title-label">Grande</div>
+                            <div class="size-action-inline">
+                                <span class="product-price" style="font-size:0.85rem;">S/ 27.00</span>
+                                <div class="controls-wrapper">
+                                    <div class="quantity-control" style="padding: 2px 6px; gap: 6px;">
+                                        <button class="qty-btn" style="font-size:0.9rem;" onclick="changePizzaQty('${p.id}', 'grande', -1)">−</button>
+                                        <span class="qty-val" style="font-size:0.8rem;" id="qty-${p.id}-grande">1</span>
+                                        <button class="qty-btn" style="font-size:0.9rem;" onclick="changePizzaQty('${p.id}', 'grande', 1)">+</button>
+                                    </div>
+                                    <button class="btn-add-item" style="padding: 4px 10px; font-size:0.65rem;" id="btn-${p.id}-grande" onclick="addPizzaToCart('${p.id}', '${p.name}', 'Grande', 27.00)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="size-box">
+                            <div class="size-title-label">Familiar</div>
+                            <div class="size-action-inline">
+                                <span class="product-price" style="font-size:0.85rem;">S/ 37.00</span>
+                                <div class="controls-wrapper">
+                                    <div class="quantity-control" style="padding: 2px 6px; gap: 6px;">
+                                        <button class="qty-btn" style="font-size:0.9rem;" onclick="changePizzaQty('${p.id}', 'familiar', -1)">−</button>
+                                        <span class="qty-val" style="font-size:0.8rem;" id="qty-${p.id}-familiar">1</span>
+                                        <button class="qty-btn" style="font-size:0.9rem;" onclick="changePizzaQty('${p.id}', 'familiar', 1)">+</button>
+                                    </div>
+                                    <button class="btn-add-item" style="padding: 4px 10px; font-size:0.65rem;" id="btn-${p.id}-familiar" onclick="addPizzaToCart('${p.id}', '${p.name}', 'Familiar', 37.00)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
         });
 
         // Pastas
         let pastas = [
-            { id: 'ravioles', name: 'Ravioles', desc: 'Acompañados de tu salsa artesanal favorita.', price: 25 },
+            { id: 'ravioles', name: 'Ravioles', desc: 'Acompañados de tu salsa favorita.', price: 25 },
             { id: 'fettuccine', name: 'Fettuccine', desc: 'Fideos artesanales con insumos premium.', price: 25 },
             { id: 'lasagna', name: 'Lasagna', desc: 'Capas intercaladas de pasta, carne bolognesa y queso.', price: 25 }
         ];
@@ -622,7 +679,7 @@
         let horneados = [
             { id: 'pan-ajo', name: 'Pan al Ajo (7 unidades)', desc: 'Pan crocante con nuestra mantequilla de ajo especial.', price: 5 },
             { id: 'pan-ajo-especial', name: 'Pan al Ajo Especial', desc: 'Con mozarella fundida, tocino picado y parmiggiano.', price: 9 },
-            { id: 'calzone', name: 'Calzone Tradicional', desc: 'Masa artesanal rellena y horneada al momento.', price: 12 }
+            { id: 'calzone', name: 'Calzone Tradicional', desc: 'Masa rellena y horneada al momento.', price: 12 }
         ];
         horneados.forEach(h => {
             boxHorneados += crearEstructuraHTMLCard(h.id, h.name, h.desc, h.price, h.id, 'simple');
@@ -631,8 +688,7 @@
         // Bebidas
         boxBebidas += crearEstructuraHTMLCard('pepsi-600ml', 'Pepsi 600ml', 'Helada y refrescante.', 6.00, 'pepsi-600ml', 'simple');
 
-        document.getElementById('box-pizzas-g').innerHTML = boxG;
-        document.getElementById('box-pizzas-f').innerHTML = boxF;
+        document.getElementById('box-pizzas-unificado').innerHTML = boxPizzasUnificado;
         document.getElementById('box-pastas').innerHTML = boxPastas;
         document.getElementById('box-horneados').innerHTML = boxHorneados;
         document.getElementById('box-bebidas').innerHTML = boxBebidas;
@@ -665,7 +721,53 @@
         `;
     }
 
-    // CONTROL UNITARIO DE OPCIONES (SALSAS O PIZZAS DE COMBOS)
+    // LÓGICA DE CONTROL DE CANTIDADES PARA SELECTORES UNIFICADOS DE PIZZA
+    function changePizzaQty(pizzaId, size, amount) {
+        let key = `${pizzaId}-${size}`;
+        if (!productQuantities[key]) productQuantities[key] = 1;
+        productQuantities[key] += amount;
+        if (productQuantities[key] < 1) productQuantities[key] = 1;
+        
+        document.getElementById(`qty-${pizzaId}-${size}`).innerText = productQuantities[key];
+        
+        // Si ya está en el carrito, actualiza la cantidad dinámicamente
+        let cartItem = cart.find(item => item.productCardId === key);
+        if (cartItem) {
+            cartItem.qty = productQuantities[key];
+            renderCart();
+        }
+    }
+
+    function addPizzaToCart(pizzaId, pizzaName, size, price) {
+        let key = `${pizzaId}-${size.toLowerCase()}`;
+        let qty = productQuantities[key] || 1;
+        
+        // Limpia duplicado si ya existía antes de agregarse nuevamente
+        cart = cart.filter(item => item.productCardId !== key);
+        
+        cart.push({
+            productCardId: key,
+            name: `${pizzaName} ${size}`,
+            price: price,
+            qty: qty,
+            optionsText: 'Sabor Tradicional 🍕',
+            type: 'pizza'
+        });
+
+        const targetButton = document.getElementById(`btn-${pizzaId}-${size.toLowerCase()}`);
+        if (targetButton) {
+            targetButton.innerText = "✔";
+            targetButton.classList.add("is-added");
+            setTimeout(() => {
+                targetButton.innerText = "+";
+                targetButton.classList.remove("is-added");
+            }, 1000);
+        }
+
+        renderCart();
+    }
+
+    // CONTROL UNITARIO PARA COMBOS Y PASTAS
     function generateDynamicBlocks(productId, currentQty, productName, type) {
         const container = document.getElementById(`salsas-container-${productId}`);
         if(!container) return; 
@@ -768,13 +870,13 @@
 
         cart = cart.filter(item => item.productCardId !== productId);
 
-        if (type === 'simple' || type === 'pizza') {
+        if (type === 'simple') {
             cart.push({
                 productCardId: productId,
                 name: productName,
                 price: price,
                 qty: qty,
-                optionsText: (type === 'pizza') ? 'Sabor Tradicional 🍕' : 'Horneado al toque',
+                optionsText: 'Horneado al momento',
                 type: type
             });
         } 
@@ -881,7 +983,7 @@
                     </div>
                     <div style="display: flex; align-items: center; gap: 10px;">
                         S/ ${itemCost.toFixed(2)}
-                        <span style="color:var(--accent-red); cursor:pointer; font-weight:bold; font-size:1.2rem; padding: 0 5px;" onclick="removeItemFromSummary(${index}, '${item.productCardId}', '${item.name}', '${item.type}')">×</span>
+                        <span style="color:var(--accent-red); cursor:pointer; font-weight:bold; font-size:1.2rem; padding: 0 5px;" onclick="removeItemFromSummary(${index}, '${item.productCardId}')">×</span>
                     </div>
                 </div>
             `;
@@ -897,7 +999,7 @@
         document.getElementById('total-val').innerText = total.toFixed(2);
     }
 
-    function removeItemFromSummary(index, productCardId, name, type) {
+    function removeItemFromSummary(index, productCardId) {
         cart.splice(index, 1);
         renderCart();
 
@@ -913,12 +1015,15 @@
             const qtyElement = document.getElementById(`${productCardId}-qty`);
             if (qtyElement) qtyElement.innerText = 1;
 
-            if (type === 'combo') {
+            if (productCardId.startsWith('card-combo')) {
                 seleccionesCombosInternos[productCardId] = { 'Americana': 0, 'Pepperoni': 0 };
             }
 
-            if (type === 'pasta' || type === 'combo') {
-                generateDynamicBlocks(productCardId, 1, name, type);
+            // Reset dinámico de bloques si aplica
+            if (productCardId === 'ravioles' || productCardId === 'fettuccine' || productCardId === 'lasagna') {
+                generateDynamicBlocks(productCardId, 1, '', 'pasta');
+            } else if (productCardId.startsWith('card-combo')) {
+                generateDynamicBlocks(productCardId, 1, '', 'combo');
             }
         }
     }
@@ -948,7 +1053,7 @@
         const cashAmount = document.getElementById('cash-amount').value.trim();
 
         if(cart.length === 0) {
-            alert("El resumen del pedido está vacío. Agrega tus pizzas primero.");
+            alert("El resumen del pedido está vacío. Agrega tus productos primero.");
             return;
         }
         if(!name || !phone || !address) {
@@ -1003,7 +1108,7 @@
 
         let outputText = `📌 *NUEVO PEDIDO WEB - PULCINELLA*\n\n👤 *Cliente:* ${name}\n📞 *Teléfono:* ${phone}\n📍 *Dirección:* ${direccionCompleta}\n${notes ? `📝 *Notas:* ${notes}\n` : ''}\n🛒 *DETALLE:*\n${resumenProductos}\n📦 *Delivery:* S/ ${parseFloat(deliverySelect.value).toFixed(2)}\n💰 *TOTAL:* S/ ${document.getElementById('total-val').innerText}\n💳 *Pago:* ${selectedPayment}`;
         
-        let nroWhatsApp = "51922529592"; // Endpoint oficial WhatsApp de Pulcinella
+        let nroWhatsApp = "51922529592"; // Endpoint oficial de Pulcinella
         let url = `https://api.whatsapp.com/send?phone=${nroWhatsApp}&text=${encodeURIComponent(outputText)}`;
         window.open(url, '_blank');
     }
