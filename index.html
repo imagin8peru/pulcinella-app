@@ -226,19 +226,18 @@
             width: 100%;
             display: flex;
             justify-content: space-between; 
-            align-items: center; /* Alineación centralizada para que el precio no vuele alto */
+            align-items: center; 
             gap: 15px;
         }
         .combo-info-left {
             flex-grow: 1;
         }
         
-        /* Contenedor específico para fijar el precio del combo en una sola línea */
         .combo-card .product-price {
-            font-size: 1.15rem; /* Un pelín más grande para destacar como en tu boceto */
+            font-size: 1.15rem; 
             color: var(--accent-gold);
             font-weight: 700;
-            white-space: nowrap; /* Evita de forma estricta que el S/ salte arriba */
+            white-space: nowrap; 
             flex-shrink: 0;
             align-self: center;
         }
@@ -373,7 +372,7 @@
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
         }
-        .input-group { margin-bottom: 12px; }
+        .input-group { margin-bottom: 12px; transition: all 0.3s ease-in-out; }
         .input-group label { display: block; font-size: 0.75rem; color: var(--text-main); margin-bottom: 5px; font-weight: 700; text-transform: uppercase;}
         .input-group input, .input-group select, .input-group textarea {
             width: 100%;
@@ -605,25 +604,25 @@
                 <input type="text" id="client-name" placeholder="Ej. Juan Pérez">
             </div>
             <div class="input-group">
-                <label>Teléfono / WhatsApp</label>
-                <input type="tel" id="client-phone" placeholder="Ej. 987654321">
-            </div>
-            <div class="input-group">
-                <label>Dirección de entrega</label>
-                <input type="text" id="client-address" placeholder="Ej. Jr. Las Caobas 240">
-            </div>
-            <div class="input-group">
-                <label>Referencia de ubicación (Opcional)</label>
-                <input type="text" id="client-reference" placeholder="Ej. Frente al parque, fachada verde">
+                <label>Teléfono / WhatsApp (Perú)</label>
+                <input type="tel" id="client-phone" placeholder="Ej. 922529592" maxlength="9" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
             </div>
             <div class="input-group">
                 <label>Zona de delivery</label>
-                <select id="delivery-zone" onchange="renderCart()">
+                <select id="delivery-zone" onchange="handleDeliveryZoneChange()">
                     <option value="3.00" data-name="Elio" selected>Elio - S/ 3.00</option>
                     <option value="5.00" data-name="Cipreses">Cipreses - S/ 5.00</option>
                     <option value="5.00" data-name="Alborada">Alborada - S/ 5.00</option>
                     <option value="0.00" data-name="Recojo en Local">Recojo en Local - S/ 0.00</option>
                 </select>
+            </div>
+            <div class="input-group" id="wrapper-address">
+                <label>Dirección de entrega</label>
+                <input type="text" id="client-address" placeholder="Ej. Jr. Las Caobas 240">
+            </div>
+            <div class="input-group" id="wrapper-reference">
+                <label>Referencia de ubicación (Opcional)</label>
+                <input type="text" id="client-reference" placeholder="Ej. Frente al parque, fachada verde">
             </div>
             <div class="input-group">
                 <label>Notas adicionales para el pizzero</label>
@@ -1176,6 +1175,31 @@
         }
     }
 
+    /* --- GESTIÓN INTERACTIVA DE VISIBILIDAD DE DIRECCIÓN --- */
+    function handleDeliveryZoneChange() {
+        const select = document.getElementById('delivery-zone');
+        const selectedZoneName = select.options[select.selectedIndex].getAttribute('data-name');
+        
+        const wrapperAddress = document.getElementById('wrapper-address');
+        const wrapperReference = document.getElementById('wrapper-reference');
+        
+        if (selectedZoneName === "Recojo en Local") {
+            // Oculta con suavidad los campos innecesarios
+            wrapperAddress.style.display = 'none';
+            wrapperReference.style.display = 'none';
+            // Limpia los valores para que no viajen datos fantasmas a WhatsApp
+            document.getElementById('client-address').value = '';
+            document.getElementById('client-reference').value = '';
+        } else {
+            // Despliega los campos si es delivery real
+            wrapperAddress.style.display = 'block';
+            wrapperReference.style.display = 'block';
+        }
+        
+        // Recalcula montos en el resumen de compra
+        renderCart();
+    }
+
     function sendOrder() {
         const name = document.getElementById('client-name').value.trim();
         const phone = document.getElementById('client-phone').value.trim();
@@ -1190,8 +1214,22 @@
             alert("El resumen del pedido está vacío. Agrega tus productos primero.");
             return;
         }
-        if(!name || !phone || !address) {
-            alert("Por favor, rellena los campos obligatorios de tus datos.");
+        
+        // CONTROL ESTRICTO: Nombre obligatorio en todos los casos
+        if(!name) {
+            alert("Por favor, ingresa tu Nombre Completo.");
+            return;
+        }
+
+        // VALIDACIÓN DE TELÉFONO PERUANO: Debe tener exactamente 9 dígitos
+        if(phone.length !== 9) {
+            alert("El número de teléfono debe tener exactamente 9 dígitos.");
+            return;
+        }
+
+        // CONDICIONAL: La dirección solo es obligatoria si NO es Recojo en Local
+        if(zoneText !== "Recojo en Local" && !address) {
+            alert("Por favor, ingresa tu Dirección de entrega.");
             return;
         }
 
@@ -1240,9 +1278,15 @@
             }
         });
 
-        let direccionCompleta = reference ? `${address} (${zoneText}) [Ref: ${reference}]` : `${address} (${zoneText})`;
+        // Formatea la ubicación final según el canal elegido
+        let direccionCompleta = "";
+        if (zoneText === "Recojo en Local") {
+            direccionCompleta = "🏪 [RECOJO EN LOCAL — PASA POR TIENDA]";
+        } else {
+            direccionCompleta = reference ? `${address} (${zoneText}) [Ref: ${reference}]` : `${address} (${zoneText})`;
+        }
 
-        let outputText = `📌 *NUEVO PEDIDO WEB - PULCINELLA*\n\n👤 *Cliente:* ${name}\n📞 *Teléfono:* ${phone}\n📍 *Dirección:* ${direccionCompleta}\n${notes ? `📝 *Notas:* ${notes}\n` : ''}\n🛒 *DETALLE:*\n${resumenProductos}\n📦 *Delivery:* S/ ${parseFloat(deliverySelect.value).toFixed(2)}\n💰 *TOTAL:* S/ ${document.getElementById('total-val').innerText}\n💳 *Pago:* ${selectedPayment}`;
+        let outputText = `📌 *NUEVO PEDIDO WEB - PULCINELLA*\n\n👤 *Cliente:* ${name}\n📞 *Teléfono:* ${phone}\n📍 *Ubicación:* ${direccionCompleta}\n${notes ? `📝 *Notas:* ${notes}\n` : ''}\n🛒 *DETALLE:*\n${resumenProductos}\n📦 *Delivery:* S/ ${parseFloat(deliverySelect.value).toFixed(2)}\n💰 *TOTAL:* S/ ${document.getElementById('total-val').innerText}\n💳 *Pago:* ${selectedPayment}`;
         
         let nroWhatsApp = "51922529592"; 
         let url = `https://api.whatsapp.com/send?phone=${nroWhatsApp}&text=${encodeURIComponent(outputText)}`;
@@ -1259,6 +1303,9 @@
         ['card-combo1', 'card-combo2', 'card-combo3'].forEach(id => {
             productQuantities[id] = 1;
         });
+        
+        // Inicializa la visibilidad por si acaso
+        handleDeliveryZoneChange();
     });
 </script>
 
