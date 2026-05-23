@@ -200,7 +200,7 @@
         .product-desc { font-size: 0.75rem; color: var(--text-muted); font-style: italic; line-height: 1.4; margin-bottom: 6px; }
         .product-price { font-size: 1rem; font-weight: 700; color: var(--accent-gold); white-space: nowrap; }
 
-        /* --- DISEÑO PREMIUM EXCLUSIVO PARA TARJETAS DE COMBOS (BANNER SUPERIOR 100%) --- */
+        /* --- DISEÑO PREMIUM COMBOS --- */
         .combo-card .product-main {
             display: flex;
             flex-direction: column;
@@ -365,7 +365,7 @@
             color: #ffffff !important;
         }
 
-        /* --- FORMULARIOS TRANSLÚCIDOS --- */
+        /* --- FORMULARIOS --- */
         .form-padding { 
             padding: 15px; 
             background-color: var(--card-light);
@@ -464,18 +464,18 @@
             box-shadow: 0 4px 12px rgba(30, 107, 56, 0.25);
         }
 
-        /* --- 🚨 VENTANA EMERGENTE UX: INTERFAZ MODAL DEL QR IZIPAY --- */
+        /* --- 🚨 VENTANA EMERGENTE UX MODIFICADA BAJO TUS TÉRMINOS --- */
         .qr-modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7); /* Capa oscura semitransparente de bloqueo */
-            display: none; /* Oculto por defecto */
+            background-color: rgba(0, 0, 0, 0.7); 
+            display: none; 
             justify-content: center;
             align-items: center;
-            z-index: 99999; /* Por encima de cualquier elemento de la web */
+            z-index: 99999; 
             padding: 20px;
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
@@ -486,7 +486,7 @@
             max-width: 400px;
             border-radius: 16px;
             border: 2px solid var(--accent-gold);
-            padding: 20px;
+            padding: 22px;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             animation: modalPop 0.3s ease-out;
@@ -499,19 +499,20 @@
             color: #5e1117;
             font-size: 1.15rem;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             text-transform: uppercase;
         }
         .qr-modal-desc {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: var(--text-main);
             line-height: 1.5;
             margin-bottom: 15px;
+            text-align: left;
         }
         .qr-modal-img-container {
             width: 100%;
-            max-width: 220px;
-            margin: 0 auto 15px auto;
+            max-width: 200px;
+            margin: 0 auto 18px auto;
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid var(--border-light);
@@ -532,7 +533,7 @@
             color: white;
             text-decoration: none;
             width: 100%;
-            padding: 12px;
+            padding: 13px;
             border-radius: 25px;
             font-weight: 700;
             font-size: 0.85rem;
@@ -540,18 +541,20 @@
             margin-bottom: 10px;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(184, 122, 19, 0.2);
+            border: none;
         }
         .qr-btn-close {
-            background: none;
-            border: 1px solid var(--text-muted);
-            color: var(--text-muted);
+            background-color: var(--accent-green);
+            color: white;
             width: 100%;
-            padding: 10px;
+            padding: 13px;
             border-radius: 25px;
             font-weight: 700;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
             cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 10px rgba(30, 107, 56, 0.2);
         }
     </style>
 </head>
@@ -774,7 +777,7 @@
             </div>
 
             <div class="btn-bottom-static-container">
-                <button class="btn-confirm-order" onclick="sendOrder()">
+                <button class="btn-confirm-order" onclick="processOrderFlow()">
                     Enviar Pedido por WhatsApp
                 </button>
             </div>
@@ -785,17 +788,20 @@
 
 <div class="qr-modal-overlay" id="payment-qr-overlay">
     <div class="qr-modal-box">
-        <div class="qr-modal-title">¡Pedido Enviado! 🍕</div>
+        <div class="qr-modal-title">¡Casi listo! 🍕</div>
         <div class="qr-modal-desc">
-            Tu pedido ya se abrió en WhatsApp. Para completar la compra por <strong>Yape o Plin</strong>, descarga este código QR, págalo desde tu app móvil y comparte la captura de pantalla en nuestro chat.
+            Para proceder con tu pedido, descarga nuestro código QR para generar el pago en <strong>Yape o Plin</strong>. No olvides enviarnos la captura de tu pago a nuestro chat.
         </div>
         <div class="qr-modal-img-container">
             <img src="imagenes/qr-izipay.jpg" alt="QR Izipay Pulcinella">
         </div>
-        <a href="imagenes/qr-izipay.jpg" download="QR-Izipay-Pulcinella.jpg" class="qr-btn-download">
-            📥 Descargar QR para Pagar
-        </a>
-        <button class="qr-btn-close" onclick="closeQrModal()">Entendido</button>
+        
+        <button class="qr-btn-download" onclick="triggerDownloadAndWhatsApp()">
+            📥 Descargar QR para Pago
+        </button>
+        <button class="qr-btn-close" onclick="triggerDirectWhatsApp()">
+            ✅ Entendido (Ya tengo el QR)
+        </button>
     </div>
 </div>
 
@@ -805,6 +811,7 @@
     let productQuantities = {};
     let addedProductsRegistry = {};
     let seleccionesCombosInternos = {};
+    let globalWhatsAppUrl = ""; // Variable global para almacenar el link formateado
 
     const PIZZAS_MAESTRAS = [
         { id: 'pulcinella', name: 'Pulcinella', desc: 'Mozarella, tocino, salame, cebolla blanca, aceituna y pimiento.' },
@@ -1300,12 +1307,9 @@
         renderCart();
     }
 
-    /* --- LÓGICA DE CONTROL DEL MODAL QR --- */
-    function closeQrModal() {
-        document.getElementById('payment-qr-overlay').style.display = 'none';
-    }
-
-    function sendOrder() {
+    /* --- GESTIÓN DEL FLUJO DEL PEDIDO BAJO TUS TÉRMINOS --- */
+    function processOrderFlow() {
+        // Ejecuta primero las validaciones estrictas de campos
         const name = document.getElementById('client-name').value.trim();
         const phone = document.getElementById('client-phone').value.trim();
         const address = document.getElementById('client-address').value.trim();
@@ -1387,30 +1391,39 @@
         let outputText = `📌 *NUEVO PEDIDO WEB - PULCINELLA*\n\n👤 *Cliente:* ${name}\n📞 *Teléfono:* ${phone}\n📍 *Ubicación:* ${direccionCompleta}\n${notes ? `📝 *Notas:* ${notes}\n` : ''}\n🛒 *DETALLE:*\n${resumenProductos}\n📦 *Delivery:* S/ ${parseFloat(deliverySelect.value).toFixed(2)}\n💰 *TOTAL:* S/ ${document.getElementById('total-val').innerText}\n💳 *Pago:* ${selectedPayment}`;
         
         let nroWhatsApp = "51922529592"; 
-        let url = `https://api.whatsapp.com/send?phone=${nroWhatsApp}&text=${encodeURIComponent(outputText)}`;
         
-        // Ejecuta la apertura de WhatsApp
-        window.open(url, '_blank');
+        // Almacenamos la URL formateada en la variable global
+        globalWhatsAppUrl = `https://api.whatsapp.com/send?phone=${nroWhatsApp}&text=${encodeURIComponent(outputText)}`;
 
-        // GATILLO INTELIGENTE DESDE LA WEB: Muestra el modal con descarga solo si es Yape o Plin
+        // GATILLO DE CONTROL: Si es Yape o Plin, frena y muestra el flotante con los dos botones hacia WhatsApp
         if (selectedPayment === "Yape" || selectedPayment === "Plin") {
             document.getElementById('payment-qr-overlay').style.display = 'flex';
+        } else {
+            // Si es Efectivo o Tarjeta, salta directo sin escalas
+            window.open(globalWhatsAppUrl, '_blank');
         }
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-        renderSeccionesCatalogo();
+    // BOTÓN 1 DEL FLOTANTE: Descarga el QR y salta a WhatsApp de inmediato
+    function triggerDownloadAndWhatsApp() {
+        // Creamos un elemento 'a' fantasma para ejecutar la descarga nativa sin salir de la página
+        let hiddenAnchor = document.createElement('a');
+        hiddenAnchor.href = "imagenes/qr-izipay.jpg";
+        hiddenAnchor.download = "QR-Izipay-Pulcinella.jpg";
+        document.body.appendChild(hiddenAnchor);
+        hiddenAnchor.click();
+        document.body.removeChild(hiddenAnchor);
 
-        generateDynamicBlocks('card-combo1', 1, 'COMBO 1', 'combo');
-        generateDynamicBlocks('card-combo2', 1, 'COMBO 2', 'combo');
-        generateDynamicBlocks('card-combo3', 1, 'COMBO 3', 'combo');
-        
-        ['card-combo1', 'card-combo2', 'card-combo3'].forEach(id => {
-            productQuantities[id] = 1;
-        });
-        
-        handleDeliveryZoneChange();
-    });
+        // Oculta el modal y abre WhatsApp al mismo tiempo
+        document.getElementById('payment-qr-overlay').style.display = 'none';
+        window.open(globalWhatsAppUrl, '_blank');
+    }
+
+    // BOTÓN 2 DEL FLOTANTE: Salta directo a WhatsApp sin descargar nada (para clientes antiguos)
+    function triggerDirectWhatsApp() {
+        document.getElementById('payment-qr-overlay').style.display = 'none';
+        window.open(globalWhatsAppUrl, '_blank');
+    }
 </script>
 
 </body>
