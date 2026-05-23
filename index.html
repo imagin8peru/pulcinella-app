@@ -463,6 +463,96 @@
             letter-spacing: 0.5px;
             box-shadow: 0 4px 12px rgba(30, 107, 56, 0.25);
         }
+
+        /* --- 🚨 VENTANA EMERGENTE UX: INTERFAZ MODAL DEL QR IZIPAY --- */
+        .qr-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Capa oscura semitransparente de bloqueo */
+            display: none; /* Oculto por defecto */
+            justify-content: center;
+            align-items: center;
+            z-index: 99999; /* Por encima de cualquier elemento de la web */
+            padding: 20px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        .qr-modal-box {
+            background-color: #F4EFE6;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 16px;
+            border: 2px solid var(--accent-gold);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: modalPop 0.3s ease-out;
+        }
+        @keyframes modalPop {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .qr-modal-title {
+            color: #5e1117;
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .qr-modal-desc {
+            font-size: 0.8rem;
+            color: var(--text-main);
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        .qr-modal-img-container {
+            width: 100%;
+            max-width: 220px;
+            margin: 0 auto 15px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            background-color: #ffffff;
+            padding: 5px;
+        }
+        .qr-modal-img-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .qr-btn-download {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: var(--accent-gold);
+            color: white;
+            text-decoration: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(184, 122, 19, 0.2);
+        }
+        .qr-btn-close {
+            background: none;
+            border: 1px solid var(--text-muted);
+            color: var(--text-muted);
+            width: 100%;
+            padding: 10px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -691,6 +781,22 @@
         </div>
     </div>
 
+</div>
+
+<div class="qr-modal-overlay" id="payment-qr-overlay">
+    <div class="qr-modal-box">
+        <div class="qr-modal-title">¡Pedido Enviado! 🍕</div>
+        <div class="qr-modal-desc">
+            Tu pedido ya se abrió en WhatsApp. Para completar la compra por <strong>Yape o Plin</strong>, descarga este código QR, págalo desde tu app móvil y comparte la captura de pantalla en nuestro chat.
+        </div>
+        <div class="qr-modal-img-container">
+            <img src="imagenes/qr-izipay.jpg" alt="QR Izipay Pulcinella">
+        </div>
+        <a href="imagenes/qr-izipay.jpg" download="QR-Izipay-Pulcinella.jpg" class="qr-btn-download">
+            📥 Descargar QR para Pagar
+        </a>
+        <button class="qr-btn-close" onclick="closeQrModal()">Entendido</button>
+    </div>
 </div>
 
 <script>
@@ -1175,7 +1281,6 @@
         }
     }
 
-    /* --- GESTIÓN INTERACTIVA DE VISIBILIDAD DE DIRECCIÓN --- */
     function handleDeliveryZoneChange() {
         const select = document.getElementById('delivery-zone');
         const selectedZoneName = select.options[select.selectedIndex].getAttribute('data-name');
@@ -1184,20 +1289,20 @@
         const wrapperReference = document.getElementById('wrapper-reference');
         
         if (selectedZoneName === "Recojo en Local") {
-            // Oculta con suavidad los campos innecesarios
             wrapperAddress.style.display = 'none';
             wrapperReference.style.display = 'none';
-            // Limpia los valores para que no viajen datos fantasmas a WhatsApp
             document.getElementById('client-address').value = '';
             document.getElementById('client-reference').value = '';
         } else {
-            // Despliega los campos si es delivery real
             wrapperAddress.style.display = 'block';
             wrapperReference.style.display = 'block';
         }
-        
-        // Recalcula montos en el resumen de compra
         renderCart();
+    }
+
+    /* --- LÓGICA DE CONTROL DEL MODAL QR --- */
+    function closeQrModal() {
+        document.getElementById('payment-qr-overlay').style.display = 'none';
     }
 
     function sendOrder() {
@@ -1214,20 +1319,14 @@
             alert("El resumen del pedido está vacío. Agrega tus productos primero.");
             return;
         }
-        
-        // CONTROL ESTRICTO: Nombre obligatorio en todos los casos
         if(!name) {
             alert("Por favor, ingresa tu Nombre Completo.");
             return;
         }
-
-        // VALIDACIÓN DE TELÉFONO PERUANO: Debe tener exactamente 9 dígitos
         if(phone.length !== 9) {
             alert("El número de teléfono debe tener exactamente 9 dígitos.");
             return;
         }
-
-        // CONDICIONAL: La dirección solo es obligatoria si NO es Recojo en Local
         if(zoneText !== "Recojo en Local" && !address) {
             alert("Por favor, ingresa tu Dirección de entrega.");
             return;
@@ -1278,7 +1377,6 @@
             }
         });
 
-        // Formatea la ubicación final según el canal elegido
         let direccionCompleta = "";
         if (zoneText === "Recojo en Local") {
             direccionCompleta = "🏪 [RECOJO EN LOCAL — PASA POR TIENDA]";
@@ -1290,7 +1388,14 @@
         
         let nroWhatsApp = "51922529592"; 
         let url = `https://api.whatsapp.com/send?phone=${nroWhatsApp}&text=${encodeURIComponent(outputText)}`;
+        
+        // Ejecuta la apertura de WhatsApp
         window.open(url, '_blank');
+
+        // GATILLO INTELIGENTE DESDE LA WEB: Muestra el modal con descarga solo si es Yape o Plin
+        if (selectedPayment === "Yape" || selectedPayment === "Plin") {
+            document.getElementById('payment-qr-overlay').style.display = 'flex';
+        }
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -1304,7 +1409,6 @@
             productQuantities[id] = 1;
         });
         
-        // Inicializa la visibilidad por si acaso
         handleDeliveryZoneChange();
     });
 </script>
