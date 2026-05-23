@@ -190,8 +190,8 @@
             -webkit-backdrop-filter: blur(4px);
         }
         .product-card:last-child { border-bottom: none; }
-        .product-main { display: flex; gap: 12px; align-items: center; }
         
+        .product-main { display: flex; gap: 12px; align-items: center; }
         .product-image { width: 80px; height: 80px; border-radius: 8px; overflow: hidden; flex-shrink: 0; border: 1px solid var(--border-light); background-color: rgba(255, 255, 255, 0.6); }
         .product-image img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -200,31 +200,37 @@
         .product-desc { font-size: 0.75rem; color: var(--text-muted); font-style: italic; line-height: 1.4; margin-bottom: 6px; }
         .product-price { font-size: 1rem; font-weight: 700; color: var(--accent-gold); }
 
-        /* --- DISEÑO ESPECÍFICO AJUSTADO PARA TARJETAS DE COMBOS (PROPORCIÓN NATIVA 650x300) --- */
+        /* --- DISEÑO PREMIUM EXCLUSIVO PARA TARJETAS DE COMBOS (BANNER SUPERIOR 100%) --- */
         .combo-card .product-main {
             display: flex;
-            gap: 12px;
+            flex-direction: column;
             align-items: flex-start;
+            gap: 12px;
+            width: 100%;
         }
         .combo-card .product-image {
-            width: 55%; /* Proporción ideal de espacio para la foto horizontal */
+            width: 100%; /* La foto ocupa todo el ancho superior de la tarjeta */
             height: auto;
-            aspect-ratio: 650 / 300; /* Clava la proporción exacta de tu imagen nativa */
+            aspect-ratio: 650 / 300; /* Clava la proporción exacta de tus banners horizontales */
             border-radius: 8px;
             overflow: hidden;
-            flex-shrink: 0;
             border: 1px solid var(--border-light);
+            background-color: rgba(255, 255, 255, 0.6);
         }
         .combo-card .product-image img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Despliega el banner completo en la madera sin recortar lados */
+            object-fit: cover; /* Se despliega completo e imponente de lado a lado */
         }
         .combo-card .product-details {
-            width: 45%; /* Espacio restante para textos y precio vertical */
+            width: 100%;
             display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
+            justify-content: space-between; /* Alinea los textos a la izquierda y el precio a la derecha */
+            align-items: flex-start;
+            gap: 15px;
+        }
+        .combo-info-left {
+            flex-grow: 1;
         }
 
         /* --- MAQUETACIÓN VERTICAL OPTIMIZADA PARA PIZZAS --- */
@@ -481,8 +487,10 @@
                     <div class="product-main">
                         <div class="product-image"><img src="imagenes/combo1.jpg"></div>
                         <div class="product-details">
-                            <div class="product-name">COMBO 1</div>
-                            <div class="product-desc">1 Pizza Grande (8 piezas) + 2 Calzones + 1 Gaseosa de 1 Litro.</div>
+                            <div class="combo-info-left">
+                                <div class="product-name">COMBO 1</div>
+                                <div class="product-desc">1 Pizza Grande (8 piezas) + 2 Calzones + 1 Gaseosa de 1 Litro.</div>
+                            </div>
                             <div class="product-price">S/ 50.00</div>
                         </div>
                     </div>
@@ -504,8 +512,10 @@
                     <div class="product-main">
                         <div class="product-image"><img src="imagenes/combo2.jpg"></div>
                         <div class="product-details">
-                            <div class="product-name">COMBO 2</div>
-                            <div class="product-desc">2 Pizzas Grandes (8 piezas) + 1 Calzone + 1 Gaseosa de 1 Litro.</div>
+                            <div class="combo-info-left">
+                                <div class="product-name">COMBO 2</div>
+                                <div class="product-desc">2 Pizzas Grandes (8 piezas) + 1 Calzone + 1 Gaseosa de 1 Litro.</div>
+                            </div>
                             <div class="product-price">S/ 65.00</div>
                         </div>
                     </div>
@@ -527,8 +537,10 @@
                     <div class="product-main">
                         <div class="product-image"><img src="imagenes/combo3.jpg"></div>
                         <div class="product-details">
-                            <div class="product-name">COMBO 3</div>
-                            <div class="product-desc">2 Pizzas Familiares (12 piezas) + 2 Calzones + 1 Gaseosa de 1 Litro + Pan al Ajo (7 und).</div>
+                            <div class="combo-info-left">
+                                <div class="product-name">COMBO 3</div>
+                                <div class="product-desc">2 Pizzas Familiares (12 piezas) + 2 Calzones + 1 Gaseosa de 1 Litro + Pan al Ajo (7 und).</div>
+                            </div>
                             <div class="product-price">S/ 95.00</div>
                         </div>
                     </div>
