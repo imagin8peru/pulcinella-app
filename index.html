@@ -11,15 +11,16 @@
     <style>
         :root {
             --bg-claro: #F4EFE6; 
-            --card-light: rgba(255, 255, 255, 0.85); /* Estructura translúcida para ver las marcas de agua */
+            --card-light: rgba(255, 255, 255, 0.4); /* Transparencia tipo vidrio para que pasen las marcas de agua */
             --accent-red: #8B1E0F; 
             --accent-gold: #B87A13;
             --accent-green: #1E6B38;
             --text-main: #2C2C2C;
             --text-muted: #666666;
-            --border-light: rgba(230, 220, 204, 0.7);
+            --border-light: rgba(230, 220, 204, 0.8);
             --radius: 12px;
-            --dorado-categoria: #c69c6c; /* Color exacto solicitado */
+            --dorado-categoria: #c69c6c; /* Color dorado base */
+            --marron-oscuro: #3e2c23;
         }
 
         * {
@@ -69,6 +70,7 @@
             margin-bottom: 15px;
             border: 1px solid var(--border-light);
             padding: 10px;
+            background-color: #F4EFE6;
         }
 
         .restaurant-logo {
@@ -95,9 +97,7 @@
 
         /* --- BLOQUES DE SECCIÓN TRANSLÚCIDOS --- */
         .block-section {
-            background-color: var(--card-light);
-            backdrop-filter: blur(2px); /* Un ligero desenfoque para asegurar la legibilidad del texto */
-            -webkit-backdrop-filter: blur(2px);
+            background-color: transparent; /* Totalmente transparente para que se vea el fondo general */
             border-radius: var(--radius);
             border: 1px solid var(--border-light);
             margin-bottom: 15px;
@@ -113,8 +113,10 @@
             align-items: center;
             gap: 10px;
             border-bottom: 1px solid var(--border-light);
-            background-color: rgba(94, 17, 23, 0.05);
+            background-color: rgba(255, 255, 255, 0.85);
             color: var(--accent-red);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
         }
 
         /* --- CONFIGURACIÓN DE COLORES PARA LAS CATEGORÍAS --- */
@@ -131,12 +133,10 @@
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            color: var(--dorado-categoria) !important;
         }
         
         .category-trigger .arrow { 
             transition: transform 0.3s; 
-            color: var(--dorado-categoria) !important; 
             font-size: 0.8rem; 
         }
         
@@ -144,18 +144,39 @@
         #cate-pizzas .category-trigger, 
         #cate-combos .category-trigger {
             background-color: #5e1117 !important;
+            color: var(--dorado-categoria) !important;
+        }
+        #cate-pizzas .category-trigger .arrow, 
+        #cate-combos .category-trigger .arrow {
+            color: var(--dorado-categoria) !important;
         }
 
-        #cate-pastas .category-trigger, 
-        #cate-bebidas .category-trigger {
+        #cate-pastas .category-trigger {
             background-color: #023e21 !important;
+            color: var(--dorado-categoria) !important;
+        }
+        #cate-pastas .category-trigger .arrow {
+            color: var(--dorado-categoria) !important;
         }
 
         #cate-horneados .category-trigger {
             background-color: #3e2c23 !important;
+            color: var(--dorado-categoria) !important;
+        }
+        #cate-horneados .category-trigger .arrow {
+            color: var(--dorado-categoria) !important;
         }
 
-        .category-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background-color: rgba(255, 255, 255, 0.4); }
+        /* Nueva configuración específica para Bebidas */
+        #cate-bebidas .category-trigger {
+            background-color: #c69c6c !important;
+            color: var(--marron-oscuro) !important;
+        }
+        #cate-bebidas .category-trigger .arrow {
+            color: var(--marron-oscuro) !important;
+        }
+
+        .category-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background-color: transparent; }
         .category-accordion.active .category-content { max-height: 6000px; transition: max-height 0.4s ease-in; }
         .category-accordion.active .category-trigger .arrow { transform: rotate(180deg); }
 
@@ -166,7 +187,9 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            background-color: transparent;
+            background-color: var(--card-light);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
         }
         .product-card:last-child { border-bottom: none; }
         .product-main { display: flex; gap: 12px; }
@@ -187,7 +210,7 @@
             margin-top: 4px;
         }
         .size-vertical-row {
-            background-color: rgba(250, 248, 245, 0.7);
+            background-color: rgba(255, 255, 255, 0.5);
             border: 1px solid var(--border-light);
             border-radius: 8px;
             padding: 10px;
@@ -219,7 +242,7 @@
             gap: 10px;
         }
         .unit-salsa-block {
-            background-color: rgba(250, 248, 245, 0.8);
+            background-color: rgba(255, 255, 255, 0.6);
             border: 1px solid var(--border-light);
             padding: 10px;
             border-radius: 8px;
@@ -263,7 +286,7 @@
             border: 1px solid var(--border-light);
             border-radius: 20px;
             padding: 3px 10px;
-            background-color: rgba(250, 248, 245, 0.9);
+            background-color: rgba(255, 255, 255, 0.8);
         }
         .qty-btn { background: none; border: none; color: var(--text-main); font-size: 1.1rem; font-weight: 700; cursor: pointer; width: 14px;}
         .qty-val { font-size: 0.85rem; font-weight: 700; min-width: 14px; text-align: center; }
@@ -284,7 +307,7 @@
 
         /* --- BOTÓN DE AGREGADO PERSISTENTE --- */
         .btn-add-item {
-            background-color: #5e1117; /* Alineado al rojo profundo */
+            background-color: #5e1117; 
             color: white;
             border: 1px solid #5e1117;
             padding: 6px 14px;
@@ -302,8 +325,13 @@
             color: #ffffff !important;
         }
 
-        /* --- FORMULARIOS --- */
-        .form-padding { padding: 15px; }
+        /* --- FORMULARIOS TRANSLÚCIDOS --- */
+        .form-padding { 
+            padding: 15px; 
+            background-color: var(--card-light);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
         .input-group { margin-bottom: 12px; }
         .input-group label { display: block; font-size: 0.75rem; color: var(--text-main); margin-bottom: 5px; font-weight: 700; text-transform: uppercase;}
         .input-group input, .input-group select, .input-group textarea {
@@ -312,7 +340,7 @@
             border: 1px solid var(--border-light);
             border-radius: 8px;
             font-size: 0.9rem;
-            background-color: rgba(250, 248, 245, 0.8);
+            background-color: rgba(255, 255, 255, 0.85);
             color: var(--text-main);
             outline: none;
         }
@@ -326,7 +354,15 @@
         }
 
         /* --- MÉTODOS DE PAGO --- */
-        .payment-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px; }
+        .payment-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 10px; 
+            padding: 15px;
+            background-color: var(--card-light);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
         .payment-option {
             border: 1px solid var(--border-light);
             border-radius: 10px;
@@ -335,7 +371,7 @@
             align-items: center;
             gap: 10px;
             cursor: pointer;
-            background-color: rgba(250, 248, 245, 0.8);
+            background-color: rgba(255, 255, 255, 0.85);
         }
         .payment-option.selected { border-color: var(--accent-green); background-color: rgba(30, 107, 56, 0.05); }
         .payment-icon { width: 24px; height: 24px; display: flex; align-items: center; }
@@ -343,7 +379,12 @@
         .payment-name { font-size: 0.85rem; font-weight: 700; }
 
         /* --- RESUMEN DE COMPRA --- */
-        .cart-padding { padding: 15px; }
+        .cart-padding { 
+            padding: 15px; 
+            background-color: var(--card-light);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
         .cart-empty { font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 10px 0; }
         .cart-item-row { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 10px 0; border-bottom: 1px dashed var(--border-light); }
         .cart-item-salsas { font-size: 0.75rem; color: var(--accent-gold); display: block; margin-top: 2px; }
@@ -569,7 +610,7 @@
             </div>
         </div>
         
-        <div style="padding: 0 15px 15px 15px;">
+        <div style="background-color: var(--card-light); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); padding: 0 15px 15px 15px;">
             <div id="cash-change-box">
                 <div class="input-group">
                     <label style="color: var(--accent-gold);">¿Con cuánto vas a pagar?</label>
