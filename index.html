@@ -97,7 +97,7 @@
 
         /* --- BLOQUES DE SECCIÓN TRANSLÚCIDOS --- */
         .block-section {
-            background-color: transparent; /* Totalmente transparente para que se vea el fondo general */
+            background-color: transparent; 
             border-radius: var(--radius);
             border: 1px solid var(--border-light);
             margin-bottom: 15px;
@@ -140,7 +140,6 @@
             font-size: 0.8rem; 
         }
         
-        /* Selectores de color específicos según la sección */
         #cate-pizzas .category-trigger, 
         #cate-combos .category-trigger {
             background-color: #5e1117 !important;
@@ -167,7 +166,6 @@
             color: var(--dorado-categoria) !important;
         }
 
-        /* Nueva configuración específica para Bebidas */
         #cate-bebidas .category-trigger {
             background-color: #c69c6c !important;
             color: var(--marron-oscuro) !important;
@@ -192,7 +190,7 @@
             -webkit-backdrop-filter: blur(4px);
         }
         .product-card:last-child { border-bottom: none; }
-        .product-main { display: flex; gap: 12px; }
+        .product-main { display: flex; gap: 12px; align-items: center; }
         
         .product-image { width: 80px; height: 80px; border-radius: 8px; overflow: hidden; flex-shrink: 0; border: 1px solid var(--border-light); background-color: rgba(255, 255, 255, 0.6); }
         .product-image img { width: 100%; height: 100%; object-fit: cover; }
@@ -201,6 +199,33 @@
         .product-name { font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; color: var(--text-main); }
         .product-desc { font-size: 0.75rem; color: var(--text-muted); font-style: italic; line-height: 1.4; margin-bottom: 6px; }
         .product-price { font-size: 1rem; font-weight: 700; color: var(--accent-gold); }
+
+        /* --- DISEÑO ESPECÍFICO AJUSTADO PARA TARJETAS DE COMBOS (PROPORCIÓN NATIVA 650x300) --- */
+        .combo-card .product-main {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        .combo-card .product-image {
+            width: 55%; /* Proporción ideal de espacio para la foto horizontal */
+            height: auto;
+            aspect-ratio: 650 / 300; /* Clava la proporción exacta de tu imagen nativa */
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 1px solid var(--border-light);
+        }
+        .combo-card .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Despliega el banner completo en la madera sin recortar lados */
+        }
+        .combo-card .product-details {
+            width: 45%; /* Espacio restante para textos y precio vertical */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
 
         /* --- MAQUETACIÓN VERTICAL OPTIMIZADA PARA PIZZAS --- */
         .pizza-size-vertical-container {
@@ -452,7 +477,7 @@
             </div>
             <div class="category-content">
                 
-                <div class="product-card" id="card-combo1">
+                <div class="product-card combo-card" id="card-combo1">
                     <div class="product-main">
                         <div class="product-image"><img src="imagenes/combo1.jpg"></div>
                         <div class="product-details">
@@ -475,7 +500,7 @@
                     </div>
                 </div>
 
-                <div class="product-card" id="card-combo2">
+                <div class="product-card combo-card" id="card-combo2">
                     <div class="product-main">
                         <div class="product-image"><img src="imagenes/combo2.jpg"></div>
                         <div class="product-details">
@@ -498,7 +523,7 @@
                     </div>
                 </div>
 
-                <div class="product-card" id="card-combo3">
+                <div class="product-card combo-card" id="card-combo3">
                     <div class="product-main">
                         <div class="product-image"><img src="imagenes/combo3.jpg"></div>
                         <div class="product-details">
