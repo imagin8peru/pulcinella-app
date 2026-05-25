@@ -134,12 +134,12 @@
             align-items: center;
             cursor: pointer;
         }
-        
+         
         .category-trigger .arrow { 
             transition: transform 0.3s; 
             font-size: 0.8rem; 
         }
-        
+         
         #cate-pizzas .category-trigger, 
         #cate-combos .category-trigger {
             background-color: #5e1117 !important;
@@ -190,7 +190,7 @@
             -webkit-backdrop-filter: blur(4px);
         }
         .product-card:last-child { border-bottom: none; }
-        
+         
         .product-main { display: flex; gap: 12px; align-items: center; }
         .product-image { width: 80px; height: 80px; border-radius: 8px; overflow: hidden; flex-shrink: 0; border: 1px solid var(--border-light); background-color: rgba(255, 255, 255, 0.6); }
         .product-image img { width: 100%; height: 100%; object-fit: cover; }
@@ -232,7 +232,7 @@
         .combo-info-left {
             flex-grow: 1;
         }
-        
+         
         .combo-card .product-price {
             font-size: 1.15rem; 
             color: var(--accent-gold);
@@ -428,7 +428,7 @@
         .cart-empty { font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 10px 0; }
         .cart-item-row { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 10px 0; border-bottom: 1px dashed var(--border-light); }
         .cart-item-salsas { font-size: 0.75rem; color: var(--accent-gold); display: block; margin-top: 2px; }
-        
+         
         .summary-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 0.85rem; color: var(--text-muted); }
         .summary-total {
             font-weight: 700;
@@ -1186,6 +1186,13 @@
             targetButton.innerText = "Agregado ✔";
             targetButton.classList.add("is-added");
         }
+
+        // Corrección: Si es pasta o combo, forzar a que dibuje los bloques dinámicos de opciones en el primer clic
+        if (type === 'pasta' || type === 'combo') {
+            let currentQty = productQuantities[containerId] || 1;
+            generateDynamicBlocks(containerId, currentQty, name, type);
+        }
+
         handleLiveCardUpdate(containerId, name, type);
     }
 
@@ -1376,7 +1383,7 @@
         Object.values(consolidatedObject).forEach(item => {
             resumenProductos += `* ${item.qty < 10 ? '0' + item.qty : item.qty} x ${item.name} (S/ ${(item.price * item.qty).toFixed(2)})\n`;
             if (item.optionsText) {
-                resumenProductos += `   └ _${item.optionsText}_\n`;
+                resumenProductos += `    └ _${item.optionsText}_\n`;
             }
         });
 
